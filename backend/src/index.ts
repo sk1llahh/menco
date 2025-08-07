@@ -7,16 +7,14 @@ import apiRoutes from './routes/index.js';
 import httpStatus from 'http-status';
 import createHttpError from 'http-errors';
 import helmet from 'helmet';
-import compression from 'compression';
 import createDebug from 'debug';
 
 const debug = createDebug('bot');
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(helmet());
-app.use(compression());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.disable('x-powered-by');

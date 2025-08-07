@@ -6,6 +6,7 @@ import { Camera, LucideEyeOff, LucideLock } from "lucide-react";
 import manWorkingImg1 from '@/shared/assets/images/man_working_1.png'
 import { ROUTES } from "@/shared/model/routes";
 import { Link } from "react-router";
+import useAuth from "@/entities/user/model/useAuth";
 
 const FORM_NAME = {
   login: 'login',
@@ -20,12 +21,14 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Page = () => {
+  const {login} = useAuth()
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = (data: FormData) => {
     console.log('data', data);
+    login.mutate(data)
   };
 
   return (
@@ -45,9 +48,9 @@ const Page = () => {
             Welcome Back!!
           </h1>
 
-          <form className="flex flex-col gap-6">
-            <input className="input w-100"/>
-            <input className="input w-100"/>
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+            <input className="input w-100" {...register(FORM_NAME.login)}/>
+            <input className="input w-100" {...register(FORM_NAME.password)}/>
 
             <a
               href="#"
