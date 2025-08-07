@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import { join } from "node:path";
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -29,13 +28,9 @@ app.use(async (req, res, next) => {
   next(createHttpError(httpStatus.NOT_FOUND));
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((error, _req, res, _next) => {
-  // @ts-ignore
+app.use((error: any, _req: any, res: any, _next: any) => {
   const status = error.status || httpStatus.INTERNAL_SERVER_ERROR;
-  // @ts-ignore
-  const message = error.message || httpStatus[statusCode];
-// @ts-ignore
+  const message = error.message || httpStatus?.[statusCode];
   res.status(status).json({
     status,
     message
@@ -45,7 +40,7 @@ app.use((error, _req, res, _next) => {
 
 try {
   app.listen(process.env.PORT, async () => {
-    await mongoose.connect(process.env.MONGODB_URL);
+    await mongoose.connect(process.env.MONGODB_URL || '');
 
     debug(`Server started on port ${process.env.PORT}`);
   });
