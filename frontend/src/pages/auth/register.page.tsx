@@ -1,34 +1,26 @@
-import { Input } from "@/shared/ui";
 import manWorkingImg2 from "@/shared/assets/images/man_working_2.png";
 import { ROUTES } from "@/shared/model/routes";
 import { Link } from "react-router";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const FORM_NAME = {
-  login: "login",
-  password: "password",
-};
-
-const schema = z.object({
-  [FORM_NAME.login]: z.string(),
-  [FORM_NAME.password]: z.string(),
-});
-
-type FormData = z.infer<typeof schema>;
+import {IUser, UserSchema} from "@/entities/user/model/types.ts";
+import useAuth from "@/entities/user/model/useAuth.ts";
+import {USER_FORM_NAME} from "@/entities/user/model/const.ts";
 
 const Page = () => {
+  const {register: handleHegister} = useAuth()
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  } = useForm<IUser>({
+    resolver: zodResolver(UserSchema),
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: IUser) => {
     console.log("data", data);
+    handleHegister.mutate(data)
   };
 
   return (
@@ -65,8 +57,8 @@ const Page = () => {
           </h1>
 
           <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-            <input className="input" {...register(FORM_NAME.login)} type="text" placeholder="email@gmail.com" />
-            <input className="input" {...register(FORM_NAME.password)} type="password" placeholder="Enter your password" />
+            <input className="input" {...register(USER_FORM_NAME.login)} type="text" placeholder="email@gmail.com" />
+            <input className="input" {...register(USER_FORM_NAME.password)} type="password" placeholder="Enter your password" />
 
             <button
               type="submit"

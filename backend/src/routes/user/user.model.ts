@@ -5,11 +5,11 @@ import {
 import { REF } from '../../utils/constants/refs.js';
 
 interface ISchema extends Document {
-    username: String
+    login: String
 }
 
 const UserSchema: Schema = new Schema<ISchema>({
-    username: {
+    login: {
         type: String,
         required: true
     }

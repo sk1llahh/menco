@@ -7,26 +7,16 @@ import manWorkingImg1 from '@/shared/assets/images/man_working_1.png'
 import { ROUTES } from "@/shared/model/routes";
 import { Link } from "react-router";
 import useAuth from "@/entities/user/model/useAuth";
-
-const FORM_NAME = {
-  login: 'login',
-  password: 'password',
-}
-
-const schema = z.object({
-  [FORM_NAME.login]: z.string(),
-  [FORM_NAME.password]: z.string(),
-});
-
-type FormData = z.infer<typeof schema>;
+import {IUser, UserSchema} from "@/entities/user/model/types.ts";
+import {USER_FORM_NAME} from "@/entities/user/model/const.ts";
 
 const Page = () => {
   const {login} = useAuth()
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  const { register, handleSubmit, formState: { errors } } = useForm<IUser>({
+    resolver: zodResolver(UserSchema),
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: IUser) => {
     console.log('data', data);
     login.mutate(data)
   };
@@ -49,8 +39,8 @@ const Page = () => {
           </h1>
 
           <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-            <input className="input w-100" {...register(FORM_NAME.login)}/>
-            <input className="input w-100" {...register(FORM_NAME.password)}/>
+            <input className="input w-100" {...register(USER_FORM_NAME.login)}/>
+            <input className="input w-100" {...register(USER_FORM_NAME.password)}/>
 
             <a
               href="#"

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {useNavigate} from 'react-router'
 import { userApi } from "../api";
+import {IUser} from "@/entities/user/model/types.ts";
 
 const authKeys = {
   all: ['auth'] as const,
@@ -12,7 +13,7 @@ const useAuth = () => {
     const navigate = useNavigate()
 
     const login = useMutation({
-        mutationFn: (body: unknown) => userApi.login(body), 
+        mutationFn: (body: IUser) => userApi.login(body),
         onSuccess(data, variables, context) {
           queryClient.setQueryData(authKeys.profile(), data);
           console.log('data', data);
@@ -20,7 +21,7 @@ const useAuth = () => {
     });
 
     const register = useMutation({
-        mutationFn: (body: unknown) => userApi.register(body), 
+        mutationFn: (body: IUser) => userApi.register(body),
         onSuccess(data, variables, context) {
           queryClient.setQueryData(authKeys.profile(), data);
           console.log('data', data);
