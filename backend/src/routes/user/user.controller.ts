@@ -1,10 +1,8 @@
 import expressAsyncHandler from 'express-async-handler';
-import userService from './user.service.js';
 
-const getUserById = expressAsyncHandler(async (req, res, next) => {
+const getUser = expressAsyncHandler(async (req, res, next) => {
   try {
-    const result = await userService.getUserById(req.params.id)
-    res.json(result)
+    res.json(req)
   } catch (e) {
     next(e);
   }
@@ -12,6 +10,6 @@ const getUserById = expressAsyncHandler(async (req, res, next) => {
 
 
 export default {
-  getUserById,
+  getUser,
 };
 

@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import authService from './auth.service.js';
-import { TUser } from './auth.types.js';
+import {IUser} from "./auth.model";
 
 const login = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let body: TUser = {
+    let body: IUser = {
       login: req.body.login,
       password: req.body.password,
     }
@@ -18,11 +18,10 @@ const login = expressAsyncHandler(async (req: Request, res: Response, next: Next
 
 const register = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let body: TUser = {
+    let body: IUser = {
       login: req.body.login,
       password: req.body.password,
     }
-
     const result = await authService.register(body)
     res.json(result)
   } catch (e) {

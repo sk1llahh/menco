@@ -19,7 +19,6 @@ const Page = () => {
   });
 
   const onSubmit = (data: IUser) => {
-    console.log("data", data);
     handleHegister.mutate(data)
   };
 

@@ -5,7 +5,5 @@ export const userApi = {
 
   register: (body: unknown) => api.post("/auth/register", body),
 
-  getProfile: () => api.get("/auth/profile"),
-
-  logout: () => api.post("/auth/logout"),
+  getProfile: () => api.get("/user/profile"),
 };

@@ -1,13 +1,11 @@
 import "./index.css";
-import { RouterProvider } from "react-router";
-import { router } from "./router";
-import { QueryProvider } from "./providers/QueryProvider";
+import {Outlet} from "react-router";
 
 function App() {
   return (
-    <QueryProvider>
-      <RouterProvider router={router} />
-    </QueryProvider>
+    <main>
+      <Outlet />
+    </main>
   );
 }
 

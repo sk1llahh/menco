@@ -1,39 +1,63 @@
-import userModel from '../user/user.model.js';
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
-import { TUser } from './auth.types.js';
+import bcrypt from "bcryptjs";
+import authModel, {IUser} from "./auth.model";
+import jwt from "jsonwebtoken";
+import {CONFIG} from "../../utils/constants/config";
 
-const login = async (body: TUser) => {
-    const {login} = body
+const login = async (body: IUser) => {
+  const {login, password} = body
 
-    let user = await userModel.findOne({login: login})
+  let user = await authModel.findOne({login: login})
 
-    if(!user){
-        throw createHttpError(httpStatus.NOT_FOUND, 'Такого пользователя не существует!')
-    }
+  if (!user) {
+    throw createHttpError(httpStatus.NOT_FOUND, 'Такого пользователя не существует!')
+  }
 
-    return user
+  const isMatch = await bcrypt.compare(password, user.password)
+
+  if (!isMatch) {
+    throw createHttpError(httpStatus.UNAUTHORIZED, 'Неверный пароль!');
+  }
+
+  const token = jwt.sign(
+    {userId: user._id, login: user.login},
+    CONFIG.JWT_SECRET,
+    {expiresIn: '7d'}
+  )
+
+  return {token, user: user}
 }
 
 
-const register = async (body: TUser) => {
-    const {login, password} = body
+const register = async (body: IUser) => {
+  const {login, password} = body
 
-    let user = await userModel.findOne({login: login})
+  let user = await authModel.findOne({login: login})
 
-    if(user){
-        throw createHttpError(httpStatus.BAD_REQUEST, 'Такой пользователь уже зарегистрирован!')
-    }
+  if (user) {
+    throw createHttpError(httpStatus.BAD_REQUEST, 'Такой пользователь уже зарегистрирован!')
+  }
 
-    const newUser = new userModel({
-        login: login,
-        password: password,
-    });
+  const hashedPassword = await bcrypt.hash(password, 10)
 
-    return newUser.save()
+  const newUser = new authModel({
+    login: login,
+    password: hashedPassword,
+  });
 
+  await newUser.save()
+
+  const token = jwt.sign(
+    {userId: newUser._id, login: newUser.login},
+    CONFIG.JWT_SECRET,
+    {expiresIn: "7d"}
+  );
+
+  return {token, user: user}
 }
+
 export default {
-    login,
-    register
+  login,
+  register
 }

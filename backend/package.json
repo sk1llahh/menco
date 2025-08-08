@@ -11,6 +11,7 @@
   "author": "Zhumabekov Adilkhan",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
