@@ -8,5 +8,7 @@ export const CONSTANT = {
 localforage.config({
   name: CONSTANT.APP_NAME,
   storeName: CONSTANT.APP_NAME,
-  driver: localforage.LOCALSTORAGE
+  driver: localforage.LOCALSTORAGE,
+  version: 1,
+  description: 'test',
 });

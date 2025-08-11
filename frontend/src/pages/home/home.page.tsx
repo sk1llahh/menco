@@ -1,7 +1,7 @@
 
 const Page = () => {
   return (
-    <h1>main</h1>
+    <h1>home</h1>
   )
 }
 
