@@ -1,7 +1,4 @@
-import {useEffect, useState} from "react";
-import * as localforage from "localforage";
-import {CONSTANT} from "@/shared/model/const.ts";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 interface JWTPayload {
   sub?: string;
@@ -9,31 +6,38 @@ interface JWTPayload {
   [key: string]: any;
 }
 
-export const useSession = () => {
-  const [token, setToken] = useState<string | null>(null);
+const CONSTANT = {
+  TOKEN: 'token'
+}
 
-  useEffect(() => {
-    localforage.getItem<string>(CONSTANT.TOKEN)
-      .then((storedToken) => {
-        setToken(storedToken || null);
-      });
-  }, []);
+export class SessionManager {
+  private _token: string | null;
+  private _session: JWTPayload | null;
 
-  const login = async (value: string) => {
-    await localforage.setItem(CONSTANT.TOKEN, value)
-    setToken(value)
+  constructor() {
+    this._token = localStorage.getItem(CONSTANT.TOKEN);
+    this._session = this._token ? jwtDecode<JWTPayload>(this._token) : null;
   }
 
-  const logout = async () => {
-    await localforage.removeItem(CONSTANT.TOKEN)
-    setToken(null)
+  login(value: string) {
+    localStorage.setItem(CONSTANT.TOKEN, value);
+    this._token = value;
+    this._session = jwtDecode<JWTPayload>(value);
   }
 
-  const session: JWTPayload | null = token ? jwtDecode<JWTPayload>(token) : null;
+  logout() {
+    localStorage.removeItem(CONSTANT.TOKEN);
+    this._token = null;
+    this._session = null;
+  }
 
-  return {
-    login,
-    logout,
-    session
+  get session(): JWTPayload | null {
+    return this._session;
+  }
+
+  get token(): string | null {
+    return this._token;
   }
 }
+
+export const sessionManager = new SessionManager();

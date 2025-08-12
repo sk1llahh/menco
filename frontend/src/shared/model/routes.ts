@@ -14,7 +14,7 @@ export const ROUTES = {
 
   SCHEDULE: "/schedule",
 
-  KNOWLEDGE_BASE: "/knowledge",
+  KNOWLEDGE_BASE: "/knowledge_base",
 } as const;
 
 

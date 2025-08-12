@@ -5,10 +5,12 @@ import { Input } from "@/shared/ui";
 import { Camera, LucideEyeOff, LucideLock } from "lucide-react";
 import manWorkingImg1 from '@/shared/assets/images/man_working_1.png'
 import { ROUTES } from "@/shared/model/routes";
-import { Link } from "react-router";
+import {Link, Navigate, useNavigate} from "react-router";
 import useAuth from "@/entities/user/model/useAuth";
 import {IUser, UserSchema} from "@/entities/user/model/types.ts";
 import {USER_FORM_NAME} from "@/entities/user/model/const.ts";
+import {useEffect} from "react";
+import {sessionManager} from "@/shared/model/session.ts";
 
 const Page = () => {
   const {login} = useAuth()

@@ -1,27 +1,21 @@
-import {useSession} from "@/shared/model/session.ts";
-import {Navigate, Outlet, redirect} from "react-router";
-import {ROUTES} from "@/shared/model/routes.ts";
-import localforage from "localforage";
-import {CONSTANT} from "@/shared/model/const.ts";
-
-async function getToken() {
-  return await localforage.getItem<string>(CONSTANT.TOKEN);
-}
+import { Navigate, Outlet } from "react-router";
+import { ROUTES } from "@/shared/model/routes.ts";
+import { sessionManager } from "@/shared/model/session.ts";
 
 export function ProtectedRoute() {
-  // const {session} = useSession()
-  //
-  // if(!session){
-  //   return <Navigate to={ROUTES.LOGIN} />
-  // }
+  if (!sessionManager.session) {
+    return <Navigate to={ROUTES.LOGIN} />;
+  }
 
-  return <Outlet/>
+  return <Outlet />;
 }
 
-export async function protectedLoader(){
-  // const token = await getToken();
-  // if (!token) {
-  //   return redirect(ROUTES.LOGIN);
-  // }
-  return null;
+export function protectedLoader(){
+  const token = sessionManager.token
+
+  if (!token) {
+    return <Navigate to={ROUTES.LOGIN} />;
+  }
+
+  return <Outlet />;
 }
