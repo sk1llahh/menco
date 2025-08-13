@@ -3,7 +3,7 @@ import {Atom} from "lucide-react";
 import {Link, Outlet} from "react-router";
 import {Fragment, useState} from "react";
 
-export const LayoutSidebar = () => {
+export const LayoutSidebar = (): React.ReactNode => {
   const [open, setOpen] = useState<boolean>(false);
 
   const menu = [
@@ -35,12 +35,12 @@ export const LayoutSidebar = () => {
         <nav className="menu menu-vertical p-4">
           {menu.map((it) => (
             <li key={it.path}>
-              <a href={it.path} className="flex items-center justify-between">
+              <Link to={it.path} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {it.icon}
                   <span>{it.label}</span>
                 </div>
-              </a>
+              </Link>
             </li>
           ))}
         </nav>

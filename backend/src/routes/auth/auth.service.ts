@@ -1,14 +1,14 @@
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
 import bcrypt from "bcryptjs";
-import authModel, {IUser} from "./auth.model";
 import jwt from "jsonwebtoken";
 import {CONFIG} from "../../utils/constants/config";
+import userModel, { IUser } from '../user/user.model';
 
 const login = async (body: IUser) => {
   const {login, password} = body
 
-  let user = await authModel.findOne({login: login})
+  let user = await userModel.findOne({login: login})
 
   if (!user) {
     throw createHttpError(httpStatus.NOT_FOUND, 'Такого пользователя не существует!')
@@ -33,7 +33,7 @@ const login = async (body: IUser) => {
 const register = async (body: IUser) => {
   const {login, password} = body
 
-  let user = await authModel.findOne({login: login})
+  let user = await userModel.findOne({login: login})
 
   if (user) {
     throw createHttpError(httpStatus.BAD_REQUEST, 'Такой пользователь уже зарегистрирован!')
@@ -41,7 +41,7 @@ const register = async (body: IUser) => {
 
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  const newUser = new authModel({
+  const newUser = new userModel({
     login: login,
     password: hashedPassword,
   });
@@ -54,7 +54,7 @@ const register = async (body: IUser) => {
     {expiresIn: "7d"}
   );
 
-  return {token, user: user}
+  return {token, user: newUser}
 }
 
 export default {

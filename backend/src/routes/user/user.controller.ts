@@ -1,8 +1,12 @@
 import expressAsyncHandler from 'express-async-handler';
+import userService from './user.service';
+import { NextFunction, Request, Response } from 'express';
 
-const getUser = expressAsyncHandler(async (req, res, next) => {
+
+const getUser = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.json({ user: req.user }); // отдаём только полезную часть
+    const result = await userService.getUser(req.user);
+    res.json(result);
   } catch (e) {
     next(e);
   }

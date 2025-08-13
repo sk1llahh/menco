@@ -22,7 +22,11 @@ const useAuth = () => {
 
   const register = useMutation({
     mutationFn: (body: IUser) => userApi.register(body),
-    mutationKey: authKeys.profile()
+    mutationKey: authKeys.profile(),
+    onSuccess(data, variables, context) {
+      sessionManager.login(data?.data.token)
+      navigate(ROUTES.HOME)
+    },
   });
 
   return {
