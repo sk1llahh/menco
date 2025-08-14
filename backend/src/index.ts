@@ -43,17 +43,16 @@ app.use(
   },
 );
 
-
 mongoose
   .connect(process.env.MONGODB_URL || '')
   .then(() => {
-      console.log('Connected to DB');
+    console.log('Connected to DB');
     app.listen(process.env.PORT, () => {
       debug(`Server started on port ${process.env.PORT}`);
     });
   })
   .catch((error) => {
-      console.log(error);
+    console.log(error);
     process.exit(1);
   });
 
