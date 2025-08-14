@@ -2,11 +2,12 @@ import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import apiRoutes from './routes/index.js';
 import httpStatus from 'http-status';
 import createHttpError from 'http-errors';
 import helmet from 'helmet';
 import createDebug from 'debug';
+
+import apiRoutes from './routes';
 
 interface ExpressError extends Error {
   status?: number;
@@ -31,23 +32,28 @@ app.use((_req: Request, _res: Response, next: NextFunction) => {
   next(createHttpError(httpStatus.NOT_FOUND));
 });
 
-app.use((error: ExpressError, _req: Request, res: Response, _next: NextFunction) => {
-  const status = error.status || httpStatus.INTERNAL_SERVER_ERROR;
-  // @ts-ignore
-  const message = error.message || httpStatus[status];
-  res.status(status).json({
-    status,
-    message,
-  });
-});
+app.use(
+  (error: ExpressError, _req: Request, res: Response, _next: NextFunction) => {
+    const status = error.status || httpStatus.INTERNAL_SERVER_ERROR;
+    const message = error.message || httpStatus[status];
+    res.status(status).json({
+      status,
+      message,
+    });
+  },
+);
 
-mongoose.connect(process.env.MONGODB_URL || '')
+
+mongoose
+  .connect(process.env.MONGODB_URL || '')
   .then(() => {
+      console.log('Connected to DB');
     app.listen(process.env.PORT, () => {
       debug(`Server started on port ${process.env.PORT}`);
     });
   })
   .catch((error) => {
+      console.log(error);
     process.exit(1);
   });
 

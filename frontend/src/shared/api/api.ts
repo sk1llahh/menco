@@ -1,6 +1,8 @@
-import { CONFIG } from "../model/config";
 import axios from "axios";
-import { sessionManager } from "@/shared/model/session.ts";
+
+import { CONFIG } from "../model/config";
+
+import { sessionManager } from "@/shared/model/session";
 
 const api = axios.create({
   baseURL: CONFIG.API_BASE_URL,
@@ -22,7 +24,7 @@ api.interceptors.response.use(
 
   (error) => {
     if (error.response?.status === 401) {
-      sessionManager.logout()
+      sessionManager.logout();
     }
 
     return Promise.reject(error);

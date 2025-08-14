@@ -19,5 +19,4 @@ export const ROUTES = {
   KNOWLEDGE_BASE: "/knowledge_base",
 } as const;
 
-
 export type AppRoutes = keyof typeof ROUTES;

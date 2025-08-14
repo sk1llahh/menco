@@ -1,5 +1,6 @@
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
+
 import userModel from './model';
 
 const getUser = async (res) => {

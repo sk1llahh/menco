@@ -1,7 +1,8 @@
-import {ROUTES} from "@/shared/model/routes.ts";
-import {Atom} from "lucide-react";
-import {Link, Outlet} from "react-router";
-import {Fragment, useState} from "react";
+import { Atom } from "lucide-react";
+import { Link, Outlet } from "react-router";
+import { useState } from "react";
+
+import { ROUTES } from "@/shared/model/routes";
 
 export const LayoutSidebar = (): React.ReactNode => {
   const [open, setOpen] = useState<boolean>(false);
@@ -9,25 +10,25 @@ export const LayoutSidebar = (): React.ReactNode => {
   const menu = [
     {
       path: ROUTES.HOME,
-      label: 'Главная',
-      icon: <Atom/>
+      label: "Главная",
+      icon: <Atom />,
     },
     {
       path: ROUTES.SEARCH,
-      label: 'Поиск',
-      icon: <Atom/>
+      label: "Поиск",
+      icon: <Atom />,
     },
     {
       path: ROUTES.SCHEDULE,
-      label: 'Расписание',
-      icon: <Atom/>
+      label: "Расписание",
+      icon: <Atom />,
     },
     {
       path: ROUTES.KNOWLEDGE_BASE,
-      label: 'База знаний',
-      icon: <Atom/>
-    }
-  ]
+      label: "База знаний",
+      icon: <Atom />,
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-base-200 flex">
@@ -48,8 +49,10 @@ export const LayoutSidebar = (): React.ReactNode => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <section className="flex-1 p-6 overflow-auto"><Outlet/></section>
+        <section className="flex-1 p-6 overflow-auto">
+          <Outlet />
+        </section>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,25 +1,25 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/shared/ui";
-import { Camera, LucideEyeOff, LucideLock } from "lucide-react";
-import manWorkingImg1 from '@/shared/assets/images/man_working_1.png'
-import { ROUTES } from "@/shared/model/routes";
-import {Link, Navigate, useNavigate} from "react-router";
+import { Link } from "react-router";
+
+import manWorkingImg1 from "@/shared/assets/images/man_working_1.png";
 import useAuth from "@/entities/user/model/useAuth";
-import {IUser, UserSchema} from "@/entities/user/model/types.ts";
-import {USER_FORM_NAME} from "@/entities/user/model/const.ts";
-import {useEffect} from "react";
-import {sessionManager} from "@/shared/model/session.ts";
+import { IUser, UserSchema } from "@/entities/user/model/types";
+import { USER_FORM_NAME } from "@/entities/user/model/const";
+import {ROUTES} from "@/shared/model/routes";
 
 const Page = () => {
-  const {login} = useAuth()
-  const { register, handleSubmit, formState: { errors } } = useForm<IUser>({
+  const { login } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IUser>({
     resolver: zodResolver(UserSchema),
   });
 
   const onSubmit = (data: IUser) => {
-    login.mutate(data)
+    login.mutate(data);
   };
 
   return (
@@ -30,7 +30,7 @@ const Page = () => {
           max-w-5xl w-full
         "
         style={{
-          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+          boxShadow: "0 10px 40px rgba(0, 0, 0, 0.1)",
         }}
       >
         {/* Left side (Form) */}
@@ -39,9 +39,18 @@ const Page = () => {
             Welcome Back!!
           </h1>
 
-          <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-            <input className="input w-100" {...register(USER_FORM_NAME.login)}/>
-            <input className="input w-100" {...register(USER_FORM_NAME.password)}/>
+          <form
+            className="flex flex-col gap-6"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <input
+              className="input w-100"
+              {...register(USER_FORM_NAME.login)}
+            />
+            <input
+              className="input w-100"
+              {...register(USER_FORM_NAME.password)}
+            />
 
             <a
               href="#"
@@ -74,7 +83,11 @@ const Page = () => {
               <img src="/google-icon.svg" alt="Google" className="h-6 w-6" />
             </button>
             <button className="p-3 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors duration-200">
-              <img src="/facebook-icon.svg" alt="Facebook" className="h-6 w-6" />
+              <img
+                src="/facebook-icon.svg"
+                alt="Facebook"
+                className="h-6 w-6"
+              />
             </button>
             <button className="p-3 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors duration-200">
               <img src="/apple-icon.svg" alt="Apple" className="h-6 w-6" />
@@ -82,9 +95,11 @@ const Page = () => {
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-10">
-        
-            <Link to={ROUTES.REGISTER} className='text-orange-500 font-semibold ml-1 hover:underline'>
-                Don't have an account?
+            <Link
+              to={ROUTES.REGISTER}
+              className="text-orange-500 font-semibold ml-1 hover:underline"
+            >
+              Don't have an account?
             </Link>
           </p>
         </div>
@@ -99,9 +114,9 @@ const Page = () => {
             alt="Person working on a laptop"
             className="absolute h-full object-contain z-10"
             style={{
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)'
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
             }}
           />
         </div>

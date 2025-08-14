@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch -r tsconfig-paths/register src/index.ts",
     "build": "tsup src --clean --format cjs,esm",
-    "start": "tsx src/index.ts"
+    "start": "tsx -r tsconfig-paths/register src/index.ts"
   },
   "keywords": [],
   "author": "Zhumabekov Adilkhan",
@@ -30,9 +30,12 @@
     "@types/http-errors": "^2.0.4",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.9",
-    "@typescript-eslint/eslint-plugin": "^8.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
     "debug": "^4.3.6",
-    "eslint": "^9.8.0",
+    "eslint": "^9.33.0",
+    "eslint-plugin-node": "^11.1.0",
+    "tsconfig-paths": "^4.2.0",
     "tsup": "^8.2.4",
     "tsx": "^4.16.5",
     "typescript": "^5.5.2"

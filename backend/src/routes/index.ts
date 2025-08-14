@@ -1,7 +1,6 @@
 import { Router } from 'express';
 
-import authentication from '../middlewares/auth.middleware.js';
-
+import authentication from '../middlewares/auth.middleware';
 import authRoute from './auth/route';
 import userRoute from './user/route';
 

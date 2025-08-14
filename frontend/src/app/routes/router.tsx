@@ -1,13 +1,15 @@
-import {  createBrowserRouter } from "react-router";
-import { Providers } from "@/app/providers.tsx";
-import App from "@/app/App.tsx";
-import { ProtectedLoader, ProtectedRoute } from "@/app/routes/protected-route";
-import { ROUTES } from "@/shared/model/routes.ts";
-import { LayoutSidebar } from "@/widgets/layout-sidebar";
-import { AuthLoader, AuthRoute } from "./auth-route";
+import { createBrowserRouter } from "react-router";
 import { Suspense } from "react";
 
-const protectedRoutes= [
+import { AuthLoader, AuthRoute } from "./auth-route.tsx";
+
+import { Providers } from "@/app/providers.tsx";
+import App from "@/app/App.tsx";
+import { ProtectedLoader, ProtectedRoute } from "@/app/routes/protected-route.tsx";
+import { ROUTES } from "@/shared/model/routes";
+import { LayoutSidebar } from "@/widgets/layout-sidebar";
+
+const protectedRoutes = [
   {
     loader: ProtectedLoader,
     element: (
@@ -21,31 +23,31 @@ const protectedRoutes= [
         children: [
           {
             path: ROUTES.HOME,
-            lazy: () => import("@/pages/home/home.page"),
+            lazy: () => import("@/pages/home/home.page.tsx"),
           },
           {
             path: ROUTES.PROFILE,
-            lazy: () => import("@/pages/profile/profile.page"),
+            lazy: () => import("@/pages/profile/profile.page.tsx"),
           },
           {
             path: ROUTES.KNOWLEDGE_BASE,
-            lazy: () => import("@/pages/knowledge_base/knowledge_base.page"),
+            lazy: () => import("@/pages/knowledge_base/knowledge_base.page.tsx"),
           },
           {
             path: ROUTES.SEARCH,
-            lazy: () => import("@/pages/search/search.page"),
+            lazy: () => import("@/pages/search/search.page.tsx"),
           },
           {
             path: ROUTES.SCHEDULE,
-            lazy: () => import("@/pages/schedule/schedule.page"),
+            lazy: () => import("@/pages/schedule/schedule.page.tsx"),
           },
           {
             path: ROUTES.SCHEDULE,
-            lazy: () => import("@/pages/schedule/schedule.page"),
+            lazy: () => import("@/pages/schedule/schedule.page.tsx"),
           },
           {
             path: ROUTES.ADMIN,
-            lazy: () => import("@/pages/admin/admin.page"),
+            lazy: () => import("@/pages/admin/admin.page.tsx"),
           },
         ],
       },
@@ -53,7 +55,7 @@ const protectedRoutes= [
   },
 ];
 
-const authRoutes  = [
+const authRoutes = [
   {
     loader: AuthLoader,
     element: (
@@ -64,11 +66,11 @@ const authRoutes  = [
     children: [
       {
         path: ROUTES.LOGIN,
-        lazy: () => import("@/pages/auth/login.page"),
+        lazy: () => import("@/pages/auth/login.page.tsx"),
       },
       {
         path: ROUTES.REGISTER,
-        lazy: () => import("@/pages/auth/register.page"),
+        lazy: () => import("@/pages/auth/register.page.tsx"),
       },
     ],
   },
@@ -83,12 +85,12 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '*',
-        lazy: () => import('@/pages/not-found/not-found.page'),
+        path: "*",
+        lazy: () => import("@/pages/not-found/not-found.page.tsx"),
       },
       {
         path: ROUTES.MAIN,
-        lazy: () => import("@/pages/main/main.page"),
+        lazy: () => import("@/pages/main/main.page.tsx"),
       },
 
       ...protectedRoutes,

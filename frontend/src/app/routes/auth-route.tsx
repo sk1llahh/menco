@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router";
-import { ROUTES } from "@/shared/model/routes.ts";
-import { sessionManager } from "@/shared/model/session.ts";
+
+import { ROUTES } from "@/shared/model/routes";
+import { sessionManager } from "@/shared/model/session";
 
 export function AuthRoute() {
   const location = useLocation();
@@ -9,14 +10,14 @@ export function AuthRoute() {
     return <Navigate to={ROUTES.MAIN} state={{ from: location }} />;
   }
 
-  return <Outlet/>;
+  return <Outlet />;
 }
 
-export function AuthLoader(){
-  const token = sessionManager.token
+export function AuthLoader() {
+  const token = sessionManager.token;
 
   if (token) {
-    return <Navigate to={ROUTES.MAIN}/>;
+    return <Navigate to={ROUTES.MAIN} />;
   }
 
   return <Outlet />;

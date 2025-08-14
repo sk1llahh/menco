@@ -1,8 +1,9 @@
-import createHttpError from "http-errors";
-import httpStatus from "http-status";
-import {Request, Response, NextFunction} from "express";
-import jwt from "jsonwebtoken";
-import {CONFIG} from "../utils/constants/config";
+import createHttpError from 'http-errors';
+import httpStatus from 'http-status';
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+
+import { CONFIG } from '@/utils/constants/config';
 
 interface JwtPayload {
   userId: string;
@@ -16,30 +17,30 @@ export interface AuthenticatedRequest extends Request {
 const authentication = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
     return next(
-      createHttpError(httpStatus.UNAUTHORIZED, "Нет токена авторизации!")
+      createHttpError(httpStatus.UNAUTHORIZED, 'Нет токена авторизации!'),
     );
   }
 
-  if (!authHeader.startsWith("Bearer ")) {
+  if (!authHeader.startsWith('Bearer ')) {
     return next(
       createHttpError(
         httpStatus.UNAUTHORIZED,
-        'Неверный формат токена! Ожидается "Bearer <token>"'
-      )
+        'Неверный формат токена! Ожидается "Bearer <token>"',
+      ),
     );
   }
 
-  const token = authHeader.split(" ")[1];
+  const token = authHeader.split(' ')[1];
 
   if (!token) {
     return next(
-      createHttpError(httpStatus.UNAUTHORIZED, "Токен не предоставлен!")
+      createHttpError(httpStatus.UNAUTHORIZED, 'Токен не предоставлен!'),
     );
   }
 
@@ -48,12 +49,12 @@ const authentication = (
     req.user = payload;
     next();
   } catch (error) {
-    console.error("JWT verification error:", error);
+    console.error('JWT verification error:', error);
     return next(
       createHttpError(
         httpStatus.UNAUTHORIZED,
-        "Невалидный или истекший токен!"
-      )
+        'Невалидный или истекший токен!',
+      ),
     );
   }
 };

@@ -1,5 +1,6 @@
-import { ROUTES } from "@/shared/model/routes"
-import { Link } from "react-router"
+import { Link } from "react-router";
+
+import { ROUTES } from "@/shared/model/routes";
 
 const Page = () => {
   return (
@@ -9,7 +10,7 @@ const Page = () => {
         <Link to={ROUTES.HOME}>Go to Home</Link>
       </button>
     </div>
-  )
-}
+  );
+};
 
-export const Component = Page
+export const Component = Page;

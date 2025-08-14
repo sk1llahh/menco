@@ -7,8 +7,8 @@ interface JWTPayload {
 }
 
 const CONSTANT = {
-  TOKEN: 'token'
-}
+  TOKEN: "token",
+};
 
 export class SessionManager {
   private _token: string | null;

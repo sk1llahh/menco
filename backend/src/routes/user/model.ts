@@ -1,5 +1,6 @@
-import { Schema, model, Document } from 'mongoose';
-import { REF } from '../../utils/constants/refs.js';
+import { Schema, model } from 'mongoose';
+
+import { REF } from '../../utils/constants/refs';
 
 export interface IUser {
   login: string;
@@ -24,7 +25,7 @@ const UserSchema: Schema = new Schema<IUser>(
       type: String,
       sparse: true,
       match: [/^\S+@\S+\.\S+$/, 'Invalid email format'],
-      default: null
+      default: null,
     },
     avatar: { type: String, default: null },
     bio: { type: String, default: null },
@@ -36,7 +37,7 @@ const UserSchema: Schema = new Schema<IUser>(
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 export default model<IUser>(REF.USER, UserSchema);

@@ -1,15 +1,11 @@
 {
   "files": [],
   "references": [
-    { "path": "./frontend/tsconfig.app.json" },
-    { "path": "./backend/tsconfig.node.json" }
+    {
+      "path": "./frontend"
+    },
+    {
+      "path": "./backend"
+    }
   ],
-  "compilerOptions": {
-    "strict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    "esModuleInterop": true,
-  },
 }
