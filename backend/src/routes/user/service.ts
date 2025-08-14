@@ -1,9 +1,9 @@
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
-import userModel from './user.model';
+import userModel from './model';
 
 const getUser = async (res) => {
-  const user = await userModel.findById(res.userId).select('-password');;
+  const user = await userModel.findById(res.userId).select('-password');
 
   if (!user) {
     throw createHttpError(httpStatus.NOT_FOUND, 'Пользователь не найден!');

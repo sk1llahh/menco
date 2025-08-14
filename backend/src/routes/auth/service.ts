@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {CONFIG} from "../../utils/constants/config";
-import userModel, { IUser } from '../user/user.model';
+import userModel, { IUser } from '../user/model';
 
 const login = async (body: IUser) => {
   const {login, password} = body

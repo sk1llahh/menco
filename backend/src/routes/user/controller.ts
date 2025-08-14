@@ -1,5 +1,5 @@
 import expressAsyncHandler from 'express-async-handler';
-import userService from './user.service';
+import userService from './service';
 import { NextFunction, Request, Response } from 'express';
 
 

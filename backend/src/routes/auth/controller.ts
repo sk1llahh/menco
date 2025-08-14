@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
-import authService from './auth.service.js';
-import { IUser } from '../user/user.model.js';
+import authService from './service';
+import { IUser } from '../user/model';
 
 const login = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
