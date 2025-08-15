@@ -1,2 +1,2 @@
-http://localhost:5173 — фронтенд
-http://localhost:8000 — бэкенд
+docker-compose up -d
+docker-compose down
