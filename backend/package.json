@@ -5,12 +5,16 @@
   "scripts": {
     "dev": "tsx watch -r tsconfig-paths/register src/index.ts",
     "build": "tsup src --clean --format cjs,esm",
-    "start": "tsx -r tsconfig-paths/register src/index.ts"
+    "start": "tsx -r tsconfig-paths/register src/index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
   },
   "keywords": [],
   "author": "Zhumabekov Adilkhan",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.14.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.12",
@@ -20,8 +24,7 @@
     "helmet": "^7.1.0",
     "http-errors": "^2.0.0",
     "http-status": "^1.7.4",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.4.4"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -35,6 +38,7 @@
     "debug": "^4.3.6",
     "eslint": "^9.33.0",
     "eslint-plugin-node": "^11.1.0",
+    "prisma": "^6.14.0",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.2.4",
     "tsx": "^4.16.5",

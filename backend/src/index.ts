@@ -1,12 +1,10 @@
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import httpStatus from 'http-status';
 import createHttpError from 'http-errors';
 import helmet from 'helmet';
 import createDebug from 'debug';
-
 import apiRoutes from './routes';
 
 interface ExpressError extends Error {
@@ -43,17 +41,8 @@ app.use(
   },
 );
 
-mongoose
-  .connect(process.env.MONGODB_URL || '')
-  .then(() => {
-    console.log('Connected to DB');
-    app.listen(process.env.PORT, () => {
-      debug(`Server started on port ${process.env.PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.log(error);
-    process.exit(1);
-  });
+app.listen(process.env.PORT, () => {
+  debug(`Server started on port ${process.env.PORT}`);
+})
 
 export default app;
