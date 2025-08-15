@@ -52,4 +52,5 @@ frontend/package-lock.json
 # Miscellaneous
 *.tgz
 *.gz
-/generated/prisma
+backend/generated/prisma
+

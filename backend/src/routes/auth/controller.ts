@@ -2,12 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
 import authService from './service';
-import { IUser } from '../user/model';
 
 const login = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: IUser = {
+      const body: any = {
         login: req.body.login,
         password: req.body.password,
       };
@@ -22,7 +21,7 @@ const login = expressAsyncHandler(
 const register = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: IUser = {
+      const body: any = {
         login: req.body.login,
         password: req.body.password,
       };

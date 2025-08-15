@@ -3,13 +3,15 @@ import httpStatus from 'http-status';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import { CONFIG } from '../../utils/constants/config';
-import userModel, { IUser } from '../user/model';
+import { CONFIG } from '@/utils/constants/config';
+import prisma from "@/prisma";
 
-const login = async (body: IUser) => {
+const login = async (body: any) => {
   const { login, password } = body;
 
-  const user = await userModel.findOne({ login: login });
+  const user = await prisma.user.findFirst({
+    where: { login }
+  });
 
   if (!user) {
     throw createHttpError(
@@ -25,7 +27,7 @@ const login = async (body: IUser) => {
   }
 
   const token = jwt.sign(
-    { userId: user._id, login: user.login },
+    { userId: user.id, login: user.login },
     CONFIG.JWT_SECRET,
     { expiresIn: '7d' },
   );
@@ -33,12 +35,14 @@ const login = async (body: IUser) => {
   return { token, user: user };
 };
 
-const register = async (body: IUser) => {
+const register = async (body: any) => {
   const { login, password } = body;
 
-  const user = await userModel.findOne({ login: login });
+  const existingUser = await prisma.user.findUnique({
+    where: { login }
+  });
 
-  if (user) {
+  if (existingUser) {
     throw createHttpError(
       httpStatus.BAD_REQUEST,
       'Такой пользователь уже зарегистрирован!',
@@ -47,15 +51,15 @@ const register = async (body: IUser) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = new userModel({
-    login: login,
-    password: hashedPassword,
+  const newUser = await prisma.user.create({
+    data: {
+      login,
+      password: hashedPassword,
+    },
   });
 
-  await newUser.save();
-
   const token = jwt.sign(
-    { userId: newUser._id, login: newUser.login },
+    { userId: newUser.id, login: newUser.login },
     CONFIG.JWT_SECRET,
     { expiresIn: '7d' },
   );
