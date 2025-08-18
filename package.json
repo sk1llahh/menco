@@ -12,11 +12,7 @@
     "dev": "concurrently \"npm run dev:postgres\" \"npm run dev:backend\" \"npm run dev:frontend\"",
 
     "build": "concurrently \"npm --prefix backend run build\" \"npm --prefix frontend run build\"",
-    "start": "concurrently \"npm --prefix backend run start\" \"npm --prefix frontend run preview\"",
-
-    "install:frontend": "cd frontend && npm install",
-    "install:backend": "cd backend && npm install",
-    "install": "concurrently \"npm run install:frontend\" \"npm run install:backend\"",
+    "start": "npm --prefix backend run start",
 
     "prepare": "husky",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
