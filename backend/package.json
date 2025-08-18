@@ -4,8 +4,9 @@
   "description": "",
   "scripts": {
     "dev": "tsx watch -r tsconfig-paths/register src/index.ts",
-    "build": "tsup src --clean --format cjs,esm",
-    "start": "tsx -r tsconfig-paths/register src/index.ts",
+    "build": "tsup src --clean --format cjs,esm --out-dir dist",
+    "start": "node dist/index.js",
+    "start:dev": "tsx -r tsconfig-paths/register src/index.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"

@@ -6,23 +6,25 @@
   },
   "type": "module",
   "scripts": {
-    "start:backend": "cd backend && npm run dev",
-    "start:frontend": "cd frontend && npm run dev",
-    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "dev:postgres": "docker-compose up -d postgres",
+    "dev:backend": "dotenv -e .env -- npm --prefix backend run dev",
+    "dev:frontend": "dotenv -e .env -- npm --prefix frontend run dev",
+    "dev": "concurrently \"npm run dev:postgres\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+
+    "build": "concurrently \"npm --prefix backend run build\" \"npm --prefix frontend run build\"",
+    "start": "concurrently \"npm --prefix backend run start\" \"npm --prefix frontend run preview\"",
+
     "install:frontend": "cd frontend && npm install",
     "install:backend": "cd backend && npm install",
     "install": "concurrently \"npm run install:frontend\" \"npm run install:backend\"",
+
     "prepare": "husky",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --cache",
+
     "prisma:generate": "cd backend && npm run prisma:generate",
     "prisma:migrate": "cd backend && npm run prisma:migrate",
-    "prisma:studio": "cd backend && npm run prisma:studio",
-    "dev:postgres": "docker-compose up -d",
-    "dev:backend": "dotenv -e .env.dev -- wait-on tcp:5432 && cd backend && npm run dev",
-    "dev:frontend": "dotenv -e .env.dev -- wait-on tcp:4000 && cd frontend && npm run dev",
-    "dev": "concurrently \"npm run dev:postgres\" \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:down": "docker-compose down"
+    "prisma:studio": "cd backend && npm run prisma:studio"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.39.1",
