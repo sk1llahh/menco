@@ -1,0 +1,9 @@
+export interface SafeUser {
+  id: string;
+  login: string;
+  email?: string | null;
+  name?: string | null;
+  avatarUrl?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}

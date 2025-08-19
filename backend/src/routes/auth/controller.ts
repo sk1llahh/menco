@@ -6,11 +6,7 @@ import authService from './service';
 const login = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: any = {
-        login: req.body.login,
-        password: req.body.password,
-      };
-      const result = await authService.login(body);
+      const result = await authService.login(req.body);
       res.json(result);
     } catch (e) {
       next(e);
@@ -21,11 +17,7 @@ const login = expressAsyncHandler(
 const register = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const body: any = {
-        login: req.body.login,
-        password: req.body.password,
-      };
-      const result = await authService.register(body);
+      const result = await authService.register(req.body);
       res.json(result);
     } catch (e) {
       next(e);

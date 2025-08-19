@@ -20,7 +20,9 @@
 
     "prisma:generate": "cd backend && npm run prisma:generate",
     "prisma:migrate": "cd backend && npm run prisma:migrate",
-    "prisma:studio": "cd backend && npm run prisma:studio"
+    "prisma:studio": "cd backend && npm run prisma:studio",
+    "prisma:db-push": "cd backend && npm run db:push",
+    "prisma:db-reset": "cd backend && npm run db:reset"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.39.1",

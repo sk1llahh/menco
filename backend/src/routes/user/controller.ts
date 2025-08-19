@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 
 import userService from './service';
 
-const getUser = expressAsyncHandler(
+const me = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await userService.getUser(req.user);
+      const result = await userService.me(req.user!.userId);
       res.json(result);
     } catch (e) {
       next(e);
@@ -15,5 +15,5 @@ const getUser = expressAsyncHandler(
 );
 
 export default {
-  getUser,
+  me,
 };

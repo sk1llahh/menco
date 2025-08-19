@@ -3,9 +3,9 @@ import httpStatus from 'http-status';
 import prisma from "@/prisma";
 
 
-const getUser = async (res: any) => {
+const me = async (userId: string) => {
   const user = await prisma.user.findUnique({
-    where: { id: res.userId }
+    where: { id: userId }
   });
 
   if (!user) {
@@ -15,6 +15,7 @@ const getUser = async (res: any) => {
   return user;
 };
 
+
 export default {
-  getUser,
+  me,
 };

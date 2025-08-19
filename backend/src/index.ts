@@ -10,6 +10,8 @@ import createHttpError from 'http-errors';
 import helmet from 'helmet';
 import createDebug from 'debug';
 import apiRoutes from './routes';
+import {CONFIG} from "@/utils/constants/config";
+import * as console from "node:console";
 
 interface ExpressError extends Error {
   status?: number;
@@ -18,7 +20,7 @@ interface ExpressError extends Error {
 const debug = createDebug('bot');
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: CONFIG.FRONTEND_URL, credentials: true }));
 app.use(helmet());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -45,8 +47,8 @@ app.use(
   },
 );
 
-app.listen(process.env.PORT, () => {
-  debug(`Server started on port ${process.env.PORT}`);
+app.listen(CONFIG.PORT, () => {
+  console.log(`Server started on port ${CONFIG.PORT}`);
 })
 
 export default app;

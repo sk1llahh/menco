@@ -1,21 +1,10 @@
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-
-import { CONFIG } from '@/utils/constants/config';
-
-interface JwtPayload {
-  userId: string;
-  login: string;
-}
-
-export interface AuthenticatedRequest extends Request {
-  user?: JwtPayload;
-}
+import {verifyAccessToken} from "@/utils/jwt";
 
 const authentication = (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ): void => {
@@ -45,11 +34,10 @@ const authentication = (
   }
 
   try {
-    const payload = jwt.verify(token, CONFIG.JWT_SECRET) as JwtPayload;
+    const payload = verifyAccessToken(token);
     req.user = payload;
     next();
   } catch (error) {
-    console.error('JWT verification error:', error);
     return next(
       createHttpError(
         httpStatus.UNAUTHORIZED,

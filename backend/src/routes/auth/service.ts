@@ -5,8 +5,11 @@ import jwt from 'jsonwebtoken';
 
 import { CONFIG } from '@/utils/constants/config';
 import prisma from "@/prisma";
+import {compare, hash} from "@/utils/crypto";
+import {signAccessToken} from "@/utils/jwt";
+import {LoginBody, RegisterBody} from "@/routes/auth/types";
 
-const login = async (body: any) => {
+const login = async (body: LoginBody) => {
   const { login, password } = body;
 
   const user = await prisma.user.findFirst({
@@ -20,22 +23,18 @@ const login = async (body: any) => {
     );
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await compare(password, user.password);
 
   if (!isMatch) {
     throw createHttpError(httpStatus.UNAUTHORIZED, 'Неверный пароль!');
   }
 
-  const token = jwt.sign(
-    { userId: user.id, login: user.login },
-    CONFIG.JWT_SECRET,
-    { expiresIn: '7d' },
-  );
+  const token = signAccessToken({ userId: user.id, login: user.login },)
 
   return { token, user: user };
 };
 
-const register = async (body: any) => {
+const register = async (body: RegisterBody) => {
   const { login, password } = body;
 
   const existingUser = await prisma.user.findUnique({
@@ -49,7 +48,7 @@ const register = async (body: any) => {
     );
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await hash(password);
 
   const newUser = await prisma.user.create({
     data: {
@@ -58,11 +57,7 @@ const register = async (body: any) => {
     },
   });
 
-  const token = jwt.sign(
-    { userId: newUser.id, login: newUser.login },
-    CONFIG.JWT_SECRET,
-    { expiresIn: '7d' },
-  );
+  const token = signAccessToken({ userId: newUser.id, login: newUser.login });
 
   return { token, user: newUser };
 };
