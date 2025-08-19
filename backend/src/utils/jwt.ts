@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {CONFIG} from "@/utils/constants/config";
+import {CONFIG} from "@/utils/config";
 import {AccessPayload} from "@/interfaces/token";
 
 export const signAccessToken = (payload: AccessPayload) => {

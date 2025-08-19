@@ -1,7 +1,7 @@
 import useProfile from "@/entities/user/model/useProfile";
 
 const Page = () => {
-  const { getProfile } = useProfile();
+  const { getProfileList } = useProfile();
 
   return <h1>profile</h1>;
 };

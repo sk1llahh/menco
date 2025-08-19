@@ -10,7 +10,7 @@ import createHttpError from 'http-errors';
 import helmet from 'helmet';
 import createDebug from 'debug';
 import apiRoutes from './routes';
-import {CONFIG} from "@/utils/constants/config";
+import {CONFIG} from "@/utils/config";
 import * as console from "node:console";
 
 interface ExpressError extends Error {

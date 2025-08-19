@@ -10,14 +10,22 @@ const useProfile = () => {
   const navigate = useNavigate();
 
   const getProfile = useQuery({
-    queryFn: () => userApi.getProfile(),
+    queryFn: () => userApi.getMe(),
     queryKey: authKeys.profile(),
+    refetchOnWindowFocus: false,
+    select: (data) => data.data,
+  });
+
+  const getProfileList = useQuery({
+    queryFn: () => userApi.getProfileList(),
+    queryKey: authKeys.list(),
     refetchOnWindowFocus: false,
     select: (data) => data.data,
   });
 
   return {
     getProfile: getProfile,
+    getProfileList: getProfileList
   };
 };
 

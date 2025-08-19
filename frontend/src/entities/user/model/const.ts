@@ -6,4 +6,5 @@ export const USER_FORM_NAME = {
 export const authKeys = {
   all: ["auth"],
   profile: () => [...authKeys.all, "profile"],
+  list: () => [...authKeys.all, "list"],
 } as const;

@@ -1,9 +1,5 @@
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-
-import { CONFIG } from '@/utils/constants/config';
 import prisma from "@/prisma";
 import {compare, hash} from "@/utils/crypto";
 import {signAccessToken} from "@/utils/jwt";
