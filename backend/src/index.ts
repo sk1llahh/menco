@@ -48,7 +48,7 @@ app.use(
       status,
       message,
     });
-  }
+  },
 );
 
 app.listen(CONFIG.PORT, () => {

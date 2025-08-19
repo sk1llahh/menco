@@ -10,7 +10,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "allowImportingTsExtensions": false,
+    "allowImportingTsExtensions": true,
     "composite": true,
     "isolatedModules": true,
     "noImplicitAny": false

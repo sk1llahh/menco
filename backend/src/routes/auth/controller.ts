@@ -11,7 +11,7 @@ const login = expressAsyncHandler(
     } catch (e) {
       next(e);
     }
-  }
+  },
 );
 
 const register = expressAsyncHandler(
@@ -22,7 +22,7 @@ const register = expressAsyncHandler(
     } catch (e) {
       next(e);
     }
-  }
+  },
 );
 
 export default {
