@@ -10,7 +10,7 @@ type ListUsersReq = Request<unknown, unknown, unknown, UsersListQuery>;
 const me = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await userService.me(req.user!.userId);
+      const result = await userService.getById(req.user!.userId);
       res.json(result);
     } catch (e) {
       next(e);
