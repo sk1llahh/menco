@@ -1,17 +1,21 @@
 import 'dotenv/config';
-import path from "path";
-import dotenv from "dotenv";
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+import path from 'path';
+
+import dotenv from 'dotenv';
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import httpStatus from 'http-status';
-import createHttpError from 'http-errors';
 import helmet from 'helmet';
+import createHttpError from 'http-errors';
+import httpStatus from 'http-status';
 import createDebug from 'debug';
+
+import { CONFIG } from '@/utils/config';
+
 import apiRoutes from './routes';
-import {CONFIG} from "@/utils/config";
-import * as console from "node:console";
+
+import * as console from 'node:console';
 
 interface ExpressError extends Error {
   status?: number;
@@ -49,6 +53,6 @@ app.use(
 
 app.listen(CONFIG.PORT, () => {
   console.log(`Server started on port ${CONFIG.PORT}`);
-})
+});
 
 export default app;

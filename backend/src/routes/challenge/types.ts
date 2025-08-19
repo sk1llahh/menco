@@ -1,4 +1,4 @@
-export type TaskType = "TEXT" | "QUIZ" | "CHECKLIST" | "VIDEO";
+export type TaskType = 'TEXT' | 'QUIZ' | 'CHECKLIST' | 'VIDEO';
 
 export interface ChallengeCreateBody {
   title: string;

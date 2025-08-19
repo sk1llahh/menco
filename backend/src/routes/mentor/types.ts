@@ -1,5 +1,4 @@
-
-export type Currency = "KZT" | "USD" | "EUR" | "RUB";
+export type Currency = 'KZT' | 'USD' | 'EUR' | 'RUB';
 
 export interface MentorProfileUpsertBody {
   title?: string;
@@ -14,7 +13,12 @@ export interface AvailabilityCreateBody {
   endsAt: string;
 }
 
-export type SessionStatus = "REQUESTED" | "CONFIRMED" | "COMPLETED" | "CANCELED" | "NO_SHOW";
+export type SessionStatus =
+  | 'REQUESTED'
+  | 'CONFIRMED'
+  | 'COMPLETED'
+  | 'CANCELED'
+  | 'NO_SHOW';
 
 export interface SessionCreateBody {
   mentorId: string;

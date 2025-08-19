@@ -1,5 +1,5 @@
-export type ChatType = "DIRECT" | "GROUP";
-export type MessageType = "TEXT" | "IMAGE" | "FILE" | "SYSTEM";
+export type ChatType = 'DIRECT' | 'GROUP';
+export type MessageType = 'TEXT' | 'IMAGE' | 'FILE' | 'SYSTEM';
 
 export interface ChatCreateBody {
   type?: ChatType;

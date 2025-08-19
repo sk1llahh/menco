@@ -1,34 +1,36 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { CONFIG } from "../model/config";
+import { sessionManager } from '@/shared/model/session';
 
-import { sessionManager } from "@/shared/model/session";
+import { CONFIG } from '../model/config';
+
 
 const api = axios.create({
-  baseURL: CONFIG.API_BASE_URL,
-  withCredentials: true,
+    baseURL: CONFIG.API_BASE_URL,
+    withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
-  const token = sessionManager.token;
+    const token = sessionManager.token;
 
-  if (token) {
-    config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+    if (token) {
+        // @ts-ignore
+      config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
 });
 
 api.interceptors.response.use(
-  (response) => response,
+    (response) => response,
 
-  (error) => {
-    if (error.response?.status === 401) {
-      sessionManager.logout();
+    (error) => {
+        if (error.response?.status === 401) {
+            sessionManager.logout();
+        }
+
+        return Promise.reject(error);
     }
-
-    return Promise.reject(error);
-  },
 );
 
 export default api;

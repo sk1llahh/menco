@@ -1,22 +1,22 @@
-import "react-router";
+import 'react-router';
 
 export const ROUTES = {
-  MAIN: "/",
+    MAIN: '/',
 
-  HOME: "/home",
+    HOME: '/home',
 
-  LOGIN: "/login",
-  REGISTER: "/register",
+    LOGIN: '/login',
+    REGISTER: '/register',
 
-  ADMIN: "/admin",
+    ADMIN: '/admin',
 
-  PROFILE: "/profile",
+    PROFILE: '/profile',
 
-  SEARCH: "/search",
+    SEARCH: '/search',
 
-  SCHEDULE: "/schedule",
+    SCHEDULE: '/schedule',
 
-  KNOWLEDGE_BASE: "/knowledge_base",
+    KNOWLEDGE_BASE: '/knowledge_base',
 } as const;
 
 export type AppRoutes = keyof typeof ROUTES;

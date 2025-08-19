@@ -1,7 +1,8 @@
+import { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
-import { Request, Response, NextFunction } from 'express';
-import {verifyAccessToken} from "@/utils/jwt";
+
+import { verifyAccessToken } from '@/utils/jwt';
 
 const authentication = (
   req: Request,

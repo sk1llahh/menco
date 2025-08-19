@@ -1,4 +1,4 @@
-import {PaginationQuery} from "@/interfaces/pagination";
+import { PaginationQuery } from '@/interfaces/pagination';
 
 export interface SafeUser {
   id: string;
@@ -11,11 +11,11 @@ export interface SafeUser {
 }
 
 export interface UserUpdate {
-  name?: string,
-  avatarUrl?: string,
-  bio?: string,
-  timezone?: string,
-  locale?: string
+  name?: string;
+  avatarUrl?: string;
+  bio?: string;
+  timezone?: string;
+  locale?: string;
 }
 
 export interface UsersListQuery extends PaginationQuery {

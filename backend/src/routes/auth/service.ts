@@ -1,15 +1,16 @@
 import createHttpError from 'http-errors';
 import httpStatus from 'http-status';
-import prisma from "@/prisma";
-import {compare, hash} from "@/utils/crypto";
-import {signAccessToken} from "@/utils/jwt";
-import {LoginBody, RegisterBody} from "@/routes/auth/types";
+
+import prisma from '@/prisma';
+import { LoginBody, RegisterBody } from '@/routes/auth/types';
+import { compare, hash } from '@/utils/crypto';
+import { signAccessToken } from '@/utils/jwt';
 
 const login = async (body: LoginBody) => {
   const { login, password } = body;
 
   const user = await prisma.user.findFirst({
-    where: { login }
+    where: { login },
   });
 
   if (!user) {
@@ -25,7 +26,7 @@ const login = async (body: LoginBody) => {
     throw createHttpError(httpStatus.UNAUTHORIZED, 'Неверный пароль!');
   }
 
-  const token = signAccessToken({ userId: user.id, login: user.login },)
+  const token = signAccessToken({ userId: user.id, login: user.login });
 
   return { token, user: user };
 };
@@ -34,7 +35,7 @@ const register = async (body: RegisterBody) => {
   const { login, password } = body;
 
   const existingUser = await prisma.user.findUnique({
-    where: { login }
+    where: { login },
   });
 
   if (existingUser) {

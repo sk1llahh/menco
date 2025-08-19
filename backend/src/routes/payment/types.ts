@@ -1,5 +1,5 @@
-export type PayPurpose = "SUBSCRIPTION" | "SESSION" | "CHALLENGE";
-export type PayCurrency = "KZT" | "USD" | "EUR" | "RUB";
+export type PayPurpose = 'SUBSCRIPTION' | 'SESSION' | 'CHALLENGE';
+export type PayCurrency = 'KZT' | 'USD' | 'EUR' | 'RUB';
 
 export interface PaymentSessionCreateBody {
   purpose: PayPurpose;
