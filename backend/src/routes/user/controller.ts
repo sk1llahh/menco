@@ -5,7 +5,6 @@ import { UsersListQuery } from '@/routes/user/types';
 
 import userService from './service';
 
-
 type ListUsersReq = Request<unknown, unknown, unknown, UsersListQuery>;
 
 const me = expressAsyncHandler(
@@ -16,7 +15,7 @@ const me = expressAsyncHandler(
     } catch (e) {
       next(e);
     }
-  },
+  }
 );
 
 const updateMe = expressAsyncHandler(
@@ -27,7 +26,7 @@ const updateMe = expressAsyncHandler(
     } catch (e) {
       next(e);
     }
-  },
+  }
 );
 
 const getById = expressAsyncHandler(
@@ -38,7 +37,7 @@ const getById = expressAsyncHandler(
     } catch (e) {
       next(e);
     }
-  },
+  }
 );
 
 const list = expressAsyncHandler(
@@ -49,7 +48,7 @@ const list = expressAsyncHandler(
     } catch (e) {
       next(e);
     }
-  },
+  }
 );
 
 export default {

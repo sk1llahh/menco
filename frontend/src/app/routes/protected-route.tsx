@@ -4,21 +4,21 @@ import { ROUTES } from '@/shared/model/routes';
 import { sessionManager } from '@/shared/model/session';
 
 export function ProtectedRoute() {
-    const location = useLocation();
+  const location = useLocation();
 
-    if (!sessionManager.session) {
-        return <Navigate to={ROUTES.LOGIN} state={{ from: location }} />;
-    }
+  if (!sessionManager.session) {
+    return <Navigate to={ROUTES.LOGIN} state={{ from: location }} />;
+  }
 
-    return <Outlet />;
+  return <Outlet />;
 }
 
 export function ProtectedLoader(params) {
-    const token = sessionManager.token;
+  const token = sessionManager.token;
 
-    if (!token) {
-        return <Navigate to={ROUTES.LOGIN} />;
-    }
+  if (!token) {
+    return <Navigate to={ROUTES.LOGIN} />;
+  }
 
-    return <Outlet />;
+  return <Outlet />;
 }

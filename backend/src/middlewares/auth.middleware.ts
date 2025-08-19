@@ -7,13 +7,13 @@ import { verifyAccessToken } from '@/utils/jwt';
 const authentication = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
     return next(
-      createHttpError(httpStatus.UNAUTHORIZED, 'Нет токена авторизации!'),
+      createHttpError(httpStatus.UNAUTHORIZED, 'Нет токена авторизации!')
     );
   }
 
@@ -21,8 +21,8 @@ const authentication = (
     return next(
       createHttpError(
         httpStatus.UNAUTHORIZED,
-        'Неверный формат токена! Ожидается "Bearer <token>"',
-      ),
+        'Неверный формат токена! Ожидается "Bearer <token>"'
+      )
     );
   }
 
@@ -30,7 +30,7 @@ const authentication = (
 
   if (!token) {
     return next(
-      createHttpError(httpStatus.UNAUTHORIZED, 'Токен не предоставлен!'),
+      createHttpError(httpStatus.UNAUTHORIZED, 'Токен не предоставлен!')
     );
   }
 
@@ -40,10 +40,7 @@ const authentication = (
     next();
   } catch (error) {
     return next(
-      createHttpError(
-        httpStatus.UNAUTHORIZED,
-        'Невалидный или истекший токен!',
-      ),
+      createHttpError(httpStatus.UNAUTHORIZED, 'Невалидный или истекший токен!')
     );
   }
 };

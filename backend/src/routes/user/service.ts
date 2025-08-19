@@ -50,7 +50,7 @@ const list = async (query: UsersListQuery): Promise<PageResult<SafeUser>> => {
       });
       return rows;
     },
-    { page, limit },
+    { page, limit }
   );
 };
 

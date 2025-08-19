@@ -10,7 +10,7 @@ const DEFAULT_LIMIT = 20 as const;
 const MAX_LIMIT = 100 as const;
 
 export function parsePagination(
-  query?: PaginationQuery | null,
+  query?: PaginationQuery | null
 ): PaginationParams {
   const p = Number(query?.page ?? DEFAULT_PAGE);
   const l = Number(query?.limit ?? DEFAULT_LIMIT);
@@ -23,7 +23,7 @@ export function parsePagination(
 
 export function buildMeta(
   totalItems: number,
-  { page, limit }: PaginationParams,
+  { page, limit }: PaginationParams
 ): PageMeta {
   const totalPages = Math.max(1, Math.ceil(totalItems / limit));
   const safePage = Math.min(page, totalPages);
@@ -42,7 +42,7 @@ export function buildMeta(
 export async function paginate<T>(
   totalCountFn: () => Promise<number>,
   pageFetchFn: (offset: number, limit: number) => Promise<T[]>,
-  params: PaginationParams,
+  params: PaginationParams
 ): Promise<PageResult<T>> {
   const meta = buildMeta(await totalCountFn(), params);
   const items =

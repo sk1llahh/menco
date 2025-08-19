@@ -16,7 +16,7 @@ const login = async (body: LoginBody) => {
   if (!user) {
     throw createHttpError(
       httpStatus.NOT_FOUND,
-      'Такого пользователя не существует!',
+      'Такого пользователя не существует!'
     );
   }
 
@@ -41,7 +41,7 @@ const register = async (body: RegisterBody) => {
   if (existingUser) {
     throw createHttpError(
       httpStatus.BAD_REQUEST,
-      'Такой пользователь уже зарегистрирован!',
+      'Такой пользователь уже зарегистрирован!'
     );
   }
 
