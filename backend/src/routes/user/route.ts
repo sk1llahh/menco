@@ -1,12 +1,15 @@
 import { Router } from 'express';
+import {authGuard} from "@/middlewares/auth.middleware";
+import c from './controller';
 
-import userController from './controller';
+const r = Router();
 
-const router: Router = Router();
+r.get("/", c.list);
+r.get("/:id", c.getById);
 
-router.get('/me', userController.me);
-router.patch('/me', userController.updateMe);
-router.get('/id/:id', userController.getById);
-router.get('/list', userController.list);
+r.get("/me/profile", authGuard, c.me);
+r.patch("/me/profile", authGuard, c.updateMe);
+r.patch("/me/password", authGuard, c.changePassword);
+r.delete("/me", authGuard, c.removeMe);
 
-export default router;
+export default r;

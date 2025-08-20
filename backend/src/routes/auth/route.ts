@@ -1,10 +1,13 @@
-import { Router } from 'express';
+import {Router} from 'express';
+import {authGuard} from '@/middlewares/auth.middleware';
+import c from './controller';
 
-import authController from './controller';
+const r = Router();
 
-const router = Router();
+r.post('/register', c.register);
+r.post('/login', c.login);
+r.post('/refresh', c.refresh);
+r.post('/logout', c.logout);
+r.post('/logout-all', authGuard, c.logoutAll);
 
-router.post('/login', authController.login);
-router.post('/register', authController.register);
-
-export default router;
+export default r;

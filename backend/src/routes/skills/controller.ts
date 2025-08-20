@@ -2,14 +2,14 @@ import {Request, Response} from "express";
 import eh from "express-async-handler";
 import {ok, fail} from "@/utils/response";
 import svc from "./service";
-import {PaymentsListQuery, PaymentCreateBody} from "./types";
+import {SkillCreateBody} from "./types";
 
-type ReqList = Request<unknown, unknown, unknown, PaymentsListQuery>;
-type ReqCreate = Request<unknown, unknown, PaymentCreateBody>;
+type ReqNone = Request;
+type ReqCreate = Request<unknown, unknown, SkillCreateBody>;
 
-const list = eh(async (req: ReqList, res: Response) => {
+const list = eh(async (_req: ReqNone, res: Response) => {
   try {
-    const r = await svc.list(req.user!.userId, req.query);
+    const r = await svc.list();
     ok(res, r);
   } catch (e) {
     fail(res, e, (e as any).status || 400);
@@ -18,7 +18,7 @@ const list = eh(async (req: ReqList, res: Response) => {
 
 const create = eh(async (req: ReqCreate, res: Response) => {
   try {
-    const r = await svc.create(req.user!.userId, req.body);
+    const r = await svc.create(req.body);
     ok(res, r, 201);
   } catch (e) {
     fail(res, e, (e as any).status || 400);

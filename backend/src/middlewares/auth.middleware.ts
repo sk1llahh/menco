@@ -1,51 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-import createHttpError from 'http-errors';
-import httpStatus from 'http-status';
+import {NextFunction, Request, Response} from "express";
+import {verifyAccessToken} from "@/utils/jwt";
 
-import { verifyAccessToken } from '@/utils/jwt';
-
-const authentication = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return next(
-      createHttpError(httpStatus.UNAUTHORIZED, 'Нет токена авторизации!'),
-    );
-  }
-
-  if (!authHeader.startsWith('Bearer ')) {
-    return next(
-      createHttpError(
-        httpStatus.UNAUTHORIZED,
-        'Неверный формат токена! Ожидается "Bearer <token>"',
-      ),
-    );
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  if (!token) {
-    return next(
-      createHttpError(httpStatus.UNAUTHORIZED, 'Токен не предоставлен!'),
-    );
-  }
-
+export function authGuard(req: Request, res: Response, next: NextFunction) {
+  const h = req.headers.authorization;
+  if (!h?.startsWith("Bearer ")) return res.status(401).json({success: false, error: {message: "Unauthorized"}});
   try {
-    const payload = verifyAccessToken(token);
-    req.user = payload;
+    const payload = verifyAccessToken(h.split(" ")[1]);
+    req.user = {userId: payload.userId, login: payload.login};
     next();
-  } catch (error) {
-    return next(
-      createHttpError(
-        httpStatus.UNAUTHORIZED,
-        'Невалидный или истекший токен!',
-      ),
-    );
+  } catch {
+    return res.status(401).json({success: false, error: {message: "Invalid token"}});
   }
-};
-
-export default authentication;
+}

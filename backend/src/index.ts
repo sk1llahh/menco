@@ -1,55 +1,42 @@
-import 'dotenv/config';
-import path from 'path';
+import path from "path";
+import dotenv from "dotenv";
 
-import dotenv from 'dotenv';
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import createHttpError from 'http-errors';
-import httpStatus from 'http-status';
-import createDebug from 'debug';
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import { notFound, errorHandler } from "@/middlewares/error.middleware";
+import apiRoutes from "@/routes";
+import { CONFIG } from "@/utils/config";
 
-import { CONFIG } from '@/utils/config';
+const app = express();
+app.set("trust proxy", 1);
 
-import apiRoutes from './routes';
+const ALLOWED_ORIGINS = (CONFIG.FRONTEND_URL || "*").split(",").map(s => s.trim());
 
-import * as console from 'node:console';
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || ALLOWED_ORIGINS.includes("*") || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
 
-interface ExpressError extends Error {
-  status?: number;
+app.use(helmet());
+
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: false, limit: "2mb" }));
+
+if (CONFIG.NODE_ENV !== "development") {
+  app.use(morgan("dev"));
 }
 
-const debug = createDebug('bot');
-const app = express();
+app.use("/api", apiRoutes);
 
-app.use(cors({ origin: CONFIG.FRONTEND_URL, credentials: true }));
-app.use(helmet());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.disable('x-powered-by');
-
-app.use('/api', apiRoutes);
-
-app.get('/', (_req: Request, res: Response) => {
-  res.status(200).send('OK');
-});
-
-app.use((_req: Request, _res: Response, next: NextFunction) => {
-  next(createHttpError(httpStatus.NOT_FOUND));
-});
-
-app.use(
-  (error: ExpressError, _req: Request, res: Response, _next: NextFunction) => {
-    const status = error.status || httpStatus.INTERNAL_SERVER_ERROR;
-    const message = error.message || httpStatus[status];
-    res.status(status).json({
-      status,
-      message,
-    });
-  },
-);
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(CONFIG.PORT, () => {
   console.log(`Server started on port ${CONFIG.PORT}`);

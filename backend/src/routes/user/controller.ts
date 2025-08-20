@@ -1,59 +1,78 @@
-import { NextFunction, Request, Response } from 'express';
-import expressAsyncHandler from 'express-async-handler';
+import {Request, Response} from 'express';
+import eh from 'express-async-handler';
+import {fail, ok} from '@/utils/response';
+import svc from './service';
+import {
+  UsersListQuery,
+  UsersListResult,
+  UpdateMeBody,
+  ChangePasswordBody,
+} from './types';
 
-import { UsersListQuery } from '@/routes/user/types';
+type ReqList = Request<unknown, unknown, unknown, UsersListQuery>;
+type ReqPatchMe = Request & Request<unknown, unknown, UpdateMeBody>;
+type ReqChangePw = Request & Request<unknown, unknown, ChangePasswordBody>;
+type ReqGetById = Request<{ id: string }>;
 
-import userService from './service';
+const list = eh(async (req: ReqList, res: Response) => {
+  try {
+    const result: UsersListResult = await svc.listUsers(req.query);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
-type ListUsersReq = Request<unknown, unknown, unknown, UsersListQuery>;
+const me = eh(async (req: Request, res: Response) => {
+  try {
+    const result = await svc.getMe(req.user!.userId);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
-const me = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await userService.getById(req.user!.userId);
-      res.json(result);
-    } catch (e) {
-      next(e);
-    }
-  },
-);
+const updateMe = eh(async (req: ReqPatchMe, res: Response) => {
+  try {
+    const result = await svc.updateMe(req.user!.userId, req.body);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
-const updateMe = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await userService.updateMe(req.user!.userId, req.body);
-      res.json(result);
-    } catch (e) {
-      next(e);
-    }
-  },
-);
+const changePassword = eh(async (req: ReqChangePw, res: Response) => {
+  try {
+    const result = await svc.changeMyPassword(req.user!.userId, req.body);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
-const getById = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await userService.getById(req.params.id);
-      res.json(result);
-    } catch (e) {
-      next(e);
-    }
-  },
-);
+const removeMe = eh(async (req: Request, res: Response) => {
+  try {
+    const result = await svc.deleteMe(req.user!.userId);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
-const list = expressAsyncHandler(
-  async (req: ListUsersReq, res: Response, next: NextFunction) => {
-    try {
-      const result = await userService.list(req.query);
-      res.json(result);
-    } catch (e) {
-      next(e);
-    }
-  },
-);
+const getById = eh(async (req: ReqGetById, res: Response) => {
+  try {
+    const result = await svc.getById(req.params.id);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
 export default {
+  list,
   me,
   updateMe,
+  changePassword,
+  removeMe,
   getById,
-  list,
 };

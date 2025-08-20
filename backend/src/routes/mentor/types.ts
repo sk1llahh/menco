@@ -1,30 +1,38 @@
-export type Currency = 'KZT' | 'USD' | 'EUR' | 'RUB';
+import { PageResult, PaginationQuery } from "@/interfaces/pagination";
 
 export interface MentorProfileUpsertBody {
-  title?: string;
-  about?: string;
-  ratePerHour?: number;
-  currency?: Currency;
+  title?: string | null;
+  about?: string | null;
+  ratePerHour?: number | null;
+  currency?: "KZT" | "USD" | "EUR" | "RUB";
   skills?: string[];
 }
 
-export interface AvailabilityCreateBody {
-  startsAt: string;
-  endsAt: string;
+export interface MentorApplicationBody {
+  message?: string | null;
 }
 
-export type SessionStatus =
-  | 'REQUESTED'
-  | 'CONFIRMED'
-  | 'COMPLETED'
-  | 'CANCELED'
-  | 'NO_SHOW';
-
-export interface SessionCreateBody {
+export interface MentorRequestBody {
   mentorId: string;
-  studentId?: string;
-  startsAt: string;
-  endsAt: string;
-  price?: number;
-  currency?: Currency;
+  message?: string | null;
 }
+
+export interface MentorCardVM {
+  id: string;
+  userId: string;
+  title?: string | null;
+  about?: string | null;
+  ratePerHour?: number | null;
+  currency?: string | null;
+  ratingAvg: number;
+  ratingCount: number;
+  isVerified: boolean;
+}
+
+export interface MentorListQuery extends PaginationQuery {
+  q?: string;
+  minRate?: number;
+  maxRate?: number;
+}
+
+export type MentorListResult = PageResult<MentorCardVM>;

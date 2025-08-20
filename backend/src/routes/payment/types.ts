@@ -1,10 +1,18 @@
-export type PayPurpose = 'SUBSCRIPTION' | 'SESSION' | 'CHALLENGE';
-export type PayCurrency = 'KZT' | 'USD' | 'EUR' | 'RUB';
+import {PageResult, PaginationQuery} from "@/interfaces/pagination";
 
-export interface PaymentSessionCreateBody {
-  purpose: PayPurpose;
+export type PaymentStatus = "PENDING" | "SUCCEEDED" | "FAILED" | "REFUNDED";
+export type Currency = "KZT" | "USD" | "EUR" | "RUB";
+
+export interface PaymentCreateBody {
   amount: number;
-  currency?: PayCurrency;
-  sessionId?: string;
-  subscriptionId?: string;
+  currency?: Currency;
+  purpose: string;
+  sessionId?: string | null;
+  subscriptionId?: string | null;
+  meta?: unknown;
+}
+
+export interface PaymentsListQuery extends PaginationQuery {
+  status?: PaymentStatus;
+  purpose?: string;
 }

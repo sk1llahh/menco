@@ -46,7 +46,7 @@ export default [
       },
     },
     settings: {
-      react: { version: 'detect' },
+      react: {version: 'detect'},
       // ВАЖНО: резолвинг TS-путей и алиасов для import-plugin
       'import/resolver': {
         typescript: {
@@ -78,7 +78,7 @@ export default [
       'import/order': [
         'warn',
         {
-          'newlines-between': 'always',
+          'newlines-between': 'never',
           alphabetize: { order: 'asc', caseInsensitive: true },
           groups: [
             'builtin',
@@ -89,7 +89,13 @@ export default [
           ],
         },
       ],
-      'import/extensions': ['warn', 'ignorePackages'],
+
+      // ⬇️ вот это главное
+      'import/extensions': [
+        'warn',
+        'ignorePackages',
+        {js: 'never', jsx: 'never', ts: 'never', tsx: 'never'},
+      ],
     },
   },
 

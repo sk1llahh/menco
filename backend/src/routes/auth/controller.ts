@@ -1,31 +1,58 @@
-import { NextFunction, Request, Response } from 'express';
-import expressAsyncHandler from 'express-async-handler';
+import {Request, Response} from 'express';
+import eh from 'express-async-handler';
+import {ok, fail} from '@/utils/response';
+import svc from './service';
+import {LoginBody, RefreshBody, RegisterBody} from './types';
 
-import authService from './service';
+type ReqRegister = Request<unknown, unknown, RegisterBody>;
+type ReqLogin = Request<unknown, unknown, LoginBody>;
+type ReqRefresh = Request<unknown, unknown, RefreshBody>;
+type ReqLogout = Request<unknown, unknown, Partial<RefreshBody>>;
+type ReqLogoutAll = Request;
 
-const login = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await authService.login(req.body);
-      res.json(result);
-    } catch (e) {
-      next(e);
-    }
-  },
-);
+const register = eh(async (req: ReqRegister, res: Response) => {
+  try {
+    const result = await svc.register(req.body);
+    ok(res, result, 201);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
-const register = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await authService.register(req.body);
-      res.json(result);
-    } catch (e) {
-      next(e);
-    }
-  },
-);
+const login = eh(async (req: ReqLogin, res: Response) => {
+  try {
+    const result = await svc.login(req.body);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
 
-export default {
-  login,
-  register,
-};
+const refresh = eh(async (req: ReqRefresh, res: Response) => {
+  try {
+    const result = await svc.refresh(req.body.refreshToken);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
+
+const logout = eh(async (req: ReqLogout, res: Response) => {
+  try {
+    const result = await svc.logout(req.body?.refreshToken);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
+
+const logoutAll = eh(async (req: ReqLogoutAll, res: Response) => {
+  try {
+    const result = await svc.logoutAll(req.user!.userId);
+    ok(res, result);
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
+});
+
+export default {register, login, refresh, logout, logoutAll};

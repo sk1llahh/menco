@@ -1,14 +1,17 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import { CONFIG } from "./config";
 
-import { AccessPayload } from '@/interfaces/token';
-import { CONFIG } from '@/utils/config';
+export interface AccessPayload {
+  userId: string;
+  login: string;
+  iat?: number;
+  exp?: number;
+}
 
-export const signAccessToken = (payload: AccessPayload) => {
-  return jwt.sign(payload, CONFIG.JWT_SECRET, {
-    expiresIn: CONFIG.JWT_EXPIRES,
-  });
-};
+export function signAccessToken(payload: AccessPayload): string {
+  return jwt.sign(payload, CONFIG.JWT_SECRET, { expiresIn: CONFIG.ACCESS_TTL });
+}
 
-export const verifyAccessToken = (token: string) => {
+export function verifyAccessToken(token: string): AccessPayload {
   return jwt.verify(token, CONFIG.JWT_SECRET) as AccessPayload;
-};
+}
