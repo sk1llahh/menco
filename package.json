@@ -6,11 +6,11 @@
   },
   "type": "module",
   "scripts": {
-    "dev:postgres": "docker-compose up -d postgres",
+    "dev:postgres": "docker compose up -d postgres",
     "dev:backend": "dotenv -e .env -- npm --prefix backend run dev",
     "dev:frontend": "dotenv -e .env -- npm --prefix frontend run dev",
     "dev": "concurrently \"npm run dev:postgres\" \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:down": "docker-compose down --remove-orphans",
+    "dev:down": "docker compose down --remove-orphans || true",
     "dev:stop": "npm run dev:down && npx kill-port 4000 5173 || exit 0",
     "build": "concurrently \"npm --prefix backend run build\" \"npm --prefix frontend run build\"",
     "start": "npm --prefix backend run start",

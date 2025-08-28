@@ -64,13 +64,20 @@ const Page = () => {
               className="input"
               {...register(USER_FORM_NAME.login)}
               type="text"
-              placeholder="email@gmail.com"
+              placeholder="login"
             />
+            <input
+              className="input"
+              {...register(USER_FORM_NAME.email)}
+              type="text"
+              placeholder="email"
+            />
+
             <input
               className="input"
               {...register(USER_FORM_NAME.password)}
               type="password"
-              placeholder="Enter your password"
+              placeholder="password"
             />
 
             <button
