@@ -1,19 +1,21 @@
-import svc from "./service";
-import { Request, Response } from "express";
-import eh from "express-async-handler";
-import { ok, fail } from "@/utils/response";
+import { Request, Response } from 'express';
+import eh from 'express-async-handler';
+import { ok, fail } from '@/utils/response';
 import {
   SubscriptionCreateBody,
   SubscriptionIdParams,
   SubscriptionListQuery,
-} from "./schema";
+} from './schema';
+import svc from './service';
 
 const list = eh(async (req: Request, res: Response) => {
   try {
     const query = req.query as unknown as SubscriptionListQuery;
     const result = await svc.list(query);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const my = eh(async (req: Request, res: Response) => {
@@ -21,7 +23,9 @@ const my = eh(async (req: Request, res: Response) => {
     const userId = (req as any).user.userId as string;
     const result = await svc.my(userId);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const create = eh(async (req: Request, res: Response) => {
@@ -30,7 +34,9 @@ const create = eh(async (req: Request, res: Response) => {
     const body = req.body as SubscriptionCreateBody;
     const result = await svc.create(userId, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const cancel = eh(async (req: Request, res: Response) => {
@@ -39,7 +45,9 @@ const cancel = eh(async (req: Request, res: Response) => {
     const { id } = req.params as unknown as SubscriptionIdParams;
     const result = await svc.cancel(id, userId);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 export default { list, my, create, cancel };

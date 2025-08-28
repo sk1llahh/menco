@@ -1,13 +1,13 @@
-import prisma from "@/prisma";
-import { paginate } from "@/utils/pagination";
-import { error } from "@/utils/errors";
-import { PageResult } from "@/interfaces/pagination";
+import { PageResult } from '@/interfaces/pagination';
+import prisma from '@/prisma';
+import { error } from '@/utils/errors';
+import { paginate } from '@/utils/pagination';
+import { PaymentItem, toPaymentItem } from './mapper';
 import {
   PaymentCreateBody,
   PaymentListQuery,
   PaymentUpdateStatusBody,
-} from "./schema";
-import { PaymentItem, toPaymentItem } from "./mapper";
+} from './schema';
 
 const list = async (q: PaymentListQuery): Promise<PageResult<PaymentItem>> => {
   const where: any = {};
@@ -19,7 +19,10 @@ const list = async (q: PaymentListQuery): Promise<PageResult<PaymentItem>> => {
     () => prisma.payment.count({ where }),
     async (offset, limit) => {
       const rows = await prisma.payment.findMany({
-        where, orderBy: { createdAt: "desc" }, skip: offset, take: limit,
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limit,
       });
       return rows.map(toPaymentItem);
     },
@@ -29,7 +32,7 @@ const list = async (q: PaymentListQuery): Promise<PageResult<PaymentItem>> => {
 
 const get = async (id: string): Promise<PaymentItem> => {
   const row = await prisma.payment.findUnique({ where: { id } });
-  if (!row) throw error("Payment not found", 404);
+  if (!row) throw error('Payment not found', 404);
   return toPaymentItem(row);
 };
 
@@ -42,7 +45,7 @@ const create = async (userId: string, body: PaymentCreateBody) => {
       userId,
       amount: body.amount as any,
       currency: body.currency,
-      status: "PENDING",
+      status: 'PENDING',
       purpose: body.purpose,
       sessionId: body.sessionId,
       subscriptionId: body.subscriptionId,
@@ -54,7 +57,7 @@ const create = async (userId: string, body: PaymentCreateBody) => {
 
 const updateStatus = async (id: string, body: PaymentUpdateStatusBody) => {
   const exists = await prisma.payment.findUnique({ where: { id } });
-  if (!exists) throw error("Payment not found", 404);
+  if (!exists) throw error('Payment not found', 404);
 
   const row = await prisma.payment.update({
     where: { id },

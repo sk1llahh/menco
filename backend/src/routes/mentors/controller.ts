@@ -1,7 +1,6 @@
-import svc from "./service";
-import { Request, Response } from "express";
-import eh from "express-async-handler";
-import { ok, fail } from "@/utils/response";
+import { Request, Response } from 'express';
+import eh from 'express-async-handler';
+import { ok, fail } from '@/utils/response';
 import {
   ApplicationCreateBody,
   ApplicationUpdateBody,
@@ -10,14 +9,17 @@ import {
   AvailabilityUpsertBody,
   MentorSearchQuery,
   MentorUpdateBody,
-} from "./schema";
+} from './schema';
+import svc from './service';
 
 const search = eh(async (req: Request, res: Response) => {
   try {
     const query = req.query as unknown as MentorSearchQuery;
     const result = await svc.search(query);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const upsertMe = eh(async (req: Request, res: Response) => {
@@ -26,7 +28,9 @@ const upsertMe = eh(async (req: Request, res: Response) => {
     const body = req.body as MentorUpdateBody;
     const result = await svc.upsertMe(userId, body);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const availabilityList = eh(async (req: Request, res: Response) => {
@@ -35,7 +39,9 @@ const availabilityList = eh(async (req: Request, res: Response) => {
     const query = req.query as unknown as AvailabilityListQuery;
     const result = await svc.availabilityList(userId, query);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const availabilityCreate = eh(async (req: Request, res: Response) => {
@@ -44,7 +50,9 @@ const availabilityCreate = eh(async (req: Request, res: Response) => {
     const body = req.body as AvailabilityUpsertBody;
     const result = await svc.availabilityCreate(userId, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const availabilityDelete = eh(async (req: Request, res: Response) => {
@@ -53,7 +61,9 @@ const availabilityDelete = eh(async (req: Request, res: Response) => {
     const params = req.params as unknown as AvailabilityIdParams;
     const result = await svc.availabilityDelete(userId, params);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const apply = eh(async (req: Request, res: Response) => {
@@ -62,7 +72,9 @@ const apply = eh(async (req: Request, res: Response) => {
     const body = req.body as ApplicationCreateBody;
     const result = await svc.apply(userId, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 // админ
@@ -72,7 +84,9 @@ const setApplicationStatus = eh(async (req: Request, res: Response) => {
     const body = req.body as ApplicationUpdateBody;
     const result = await svc.setApplicationStatus(appId, body);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 export default {

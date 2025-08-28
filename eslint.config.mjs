@@ -18,6 +18,8 @@ export default [
       '**/.next/**',
       '**/coverage/**',
       '**/.husky/**',
+      'backend/generated/**',
+      'backend/generated/prisma/**',
     ],
   },
 
@@ -46,7 +48,7 @@ export default [
       },
     },
     settings: {
-      react: {version: 'detect'},
+      react: { version: 'detect' },
       // ВАЖНО: резолвинг TS-путей и алиасов для import-plugin
       'import/resolver': {
         typescript: {
@@ -57,6 +59,7 @@ export default [
             './backend/tsconfig.json',
           ],
           alwaysTryTypes: true,
+          noWarnOnMultipleProjects: true,
         },
       },
     },
@@ -91,10 +94,11 @@ export default [
       ],
 
       // ⬇️ вот это главное
+      // Для JS сохраняем без расширений; для TS отдельно отключим ниже
       'import/extensions': [
         'warn',
         'ignorePackages',
-        {js: 'never', jsx: 'never', ts: 'never', tsx: 'never'},
+        { js: 'never', jsx: 'never' },
       ],
     },
   },
@@ -125,6 +129,14 @@ export default [
     rules: {
       'n/no-unsupported-features/es-builtins': 'off',
       'n/no-missing-import': 'off', // чтобы не конфликтовало с import/no-unresolved
+    },
+  },
+
+  // Отключаем import/extensions для TS/TSX (проект использует и с расширениями, и без)
+  {
+    files: ['**/*.{ts,tsx}'],
+    rules: {
+      'import/extensions': 'off',
     },
   },
 

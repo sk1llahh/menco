@@ -6,11 +6,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "allowImportingTsExtensions": true,
     "composite": true,
     "isolatedModules": true,
     "noImplicitAny": false

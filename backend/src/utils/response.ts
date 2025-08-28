@@ -1,22 +1,24 @@
-import {Response} from 'express';
-import {ApiResponse} from '@/interfaces/api';
+import { Response } from 'express';
+import { ApiResponse } from '@/interfaces/api';
 
 export function ok<T>(res: Response, data: T, status = 200): void {
   if (res.headersSent) return;
-  const body: ApiResponse<T> = {success: true, data} as ApiResponse<T>;
+  const body: ApiResponse<T> = { success: true, data } as ApiResponse<T>;
   res.status(status).json(body);
 }
 
-export function fail(res: Response, error: unknown, fallbackStatus = 400): void {
+export function fail(
+  res: Response,
+  error: unknown,
+  fallbackStatus = 400,
+): void {
   if (res.headersSent) return;
 
   const anyErr = error as any;
   const status = numberOr(anyErr?.status ?? anyErr?.statusCode, fallbackStatus);
 
   const message =
-    typeof error === "string"
-      ? error
-      : anyErr?.message ?? "Bad request";
+    typeof error === 'string' ? error : (anyErr?.message ?? 'Bad request');
 
   const payload = {
     success: false as const,
@@ -31,6 +33,6 @@ export function fail(res: Response, error: unknown, fallbackStatus = 400): void 
 }
 
 const numberOr = (v: unknown, or: number): number => {
-  const n = typeof v === "number" ? v : Number(v);
+  const n = typeof v === 'number' ? v : Number(v);
   return Number.isFinite(n) ? n : or;
-}
+};

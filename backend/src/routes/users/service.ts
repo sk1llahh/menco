@@ -1,17 +1,18 @@
-import prisma from "@/prisma";
-import { paginate } from "@/utils/pagination";
-import { UsersListQuery, UserIdParams, UserUpdateBody } from "./schema";
-import { UserItem, toUserItem } from "./mapper";
-import { PageResult } from "@/interfaces/pagination";
-import { error } from "@/utils/errors";
+import { PageResult } from '@/interfaces/pagination';
+import prisma from '@/prisma';
+import { error } from '@/utils/errors';
+import { paginate } from '@/utils/pagination';
+import { UserItem, toUserItem } from './mapper';
+import { UsersListQuery, UserIdParams, UserUpdateBody } from './schema';
 
 const list = async (q: UsersListQuery): Promise<PageResult<UserItem>> => {
   const where: any = {};
-  if (q.q) where.OR = [
-    { login: { contains: q.q, mode: "insensitive" } },
-    { name: { contains: q.q, mode: "insensitive" } },
-    { email: { contains: q.q, mode: "insensitive" } },
-  ];
+  if (q.q)
+    where.OR = [
+      { login: { contains: q.q, mode: 'insensitive' } },
+      { name: { contains: q.q, mode: 'insensitive' } },
+      { email: { contains: q.q, mode: 'insensitive' } },
+    ];
   if (q.mode) where.mode = q.mode;
   if (q.status) where.status = q.status;
 
@@ -19,16 +20,20 @@ const list = async (q: UsersListQuery): Promise<PageResult<UserItem>> => {
     () => prisma.user.count({ where }),
     async (offset, limit) => {
       const rows = await prisma.user.findMany({
-        where, orderBy: { createdAt: "desc" }, skip: offset, take: limit,
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limit,
       });
       return rows.map(toUserItem);
-    }, { page: q.page, limit: q.limit }
+    },
+    { page: q.page, limit: q.limit },
   );
 };
 
 const getById = async (id: string) => {
   const u = await prisma.user.findUnique({ where: { id } });
-  if (!u) throw error("User not found", 404);
+  if (!u) throw error('User not found', 404);
   return toUserItem(u);
 };
 

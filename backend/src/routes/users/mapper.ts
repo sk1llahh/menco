@@ -4,8 +4,8 @@ export type UserItem = {
   email: string | null;
   name: string | null;
   avatarUrl: string | null;
-  mode: "LEARNER"|"MENTOR"|"BOTH";
-  status: "ACTIVE"|"BLOCKED";
+  mode: 'LEARNER' | 'MENTOR' | 'BOTH';
+  status: 'ACTIVE' | 'BLOCKED';
   createdAt: Date;
 };
 

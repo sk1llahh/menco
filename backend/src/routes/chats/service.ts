@@ -1,27 +1,30 @@
-import prisma from "@/prisma";
-import { paginate } from "@/utils/pagination";
-import { error } from "@/utils/errors";
+import prisma from '@/prisma';
+import { error } from '@/utils/errors';
+import { paginate } from '@/utils/pagination';
+import { toChatItem, toMessageItem, toChatMemberItem } from './mapper';
 import {
   ChatListQuery,
   ChatCreateBody,
   MessageCreateBody,
   AddMemberBody,
-} from "./schema";
-import { toChatItem, toMessageItem, toChatMemberItem } from "./mapper";
+} from './schema';
 
 const list = async (userId: string, q: ChatListQuery) =>
   paginate(
-    () => prisma.chat.count({ where: { members: { some: { userId } }, type: q.type } }),
+    () =>
+      prisma.chat.count({
+        where: { members: { some: { userId } }, type: q.type },
+      }),
     async (offset, limit) => {
       const rows = await prisma.chat.findMany({
         where: { members: { some: { userId } }, type: q.type },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
         skip: offset,
         take: limit,
       });
       return rows.map(toChatItem);
     },
-    { page: q.page, limit: q.limit }
+    { page: q.page, limit: q.limit },
   );
 
 const create = async (userId: string, body: ChatCreateBody) => {
@@ -32,8 +35,11 @@ const create = async (userId: string, body: ChatCreateBody) => {
       createdById: userId,
       members: {
         create: [
-          { userId, role: "OWNER" },
-          ...(body.memberIds ?? []).map((id) => ({ userId: id, role: "MEMBER" })),
+          { userId, role: 'OWNER' },
+          ...(body.memberIds ?? []).map((id) => ({
+            userId: id,
+            role: 'MEMBER',
+          })),
         ],
       },
     },
@@ -41,7 +47,11 @@ const create = async (userId: string, body: ChatCreateBody) => {
   return toChatItem(chat);
 };
 
-const postMessage = async (chatId: string, senderId: string, body: MessageCreateBody) => {
+const postMessage = async (
+  chatId: string,
+  senderId: string,
+  body: MessageCreateBody,
+) => {
   const msg = await prisma.message.create({
     data: { chatId, senderId, content: body.content, type: body.type },
   });

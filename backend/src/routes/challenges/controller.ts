@@ -1,7 +1,6 @@
-import svc from "./service";
-import { Request, Response } from "express";
-import eh from "express-async-handler";
-import { ok, fail } from "@/utils/response";
+import { Request, Response } from 'express';
+import eh from 'express-async-handler';
+import { ok, fail } from '@/utils/response';
 import {
   ChallengeCreateBody,
   ChallengeIdParams,
@@ -9,14 +8,17 @@ import {
   TaskCreateBody,
   TaskIdParams,
   TaskListQuery,
-} from "./schema";
+} from './schema';
+import svc from './service';
 
 const list = eh(async (req: Request, res: Response) => {
   try {
     const query = req.query as unknown as ChallengeListQuery;
     const result = await svc.list(query);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const create = eh(async (req: Request, res: Response) => {
@@ -25,7 +27,9 @@ const create = eh(async (req: Request, res: Response) => {
     const body = req.body as ChallengeCreateBody;
     const result = await svc.create(userId, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const get = eh(async (req: Request, res: Response) => {
@@ -33,7 +37,9 @@ const get = eh(async (req: Request, res: Response) => {
     const { id } = req.params as unknown as ChallengeIdParams;
     const result = await svc.get(id);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 // tasks
@@ -43,7 +49,9 @@ const tasks = eh(async (req: Request, res: Response) => {
     const query = req.query as unknown as TaskListQuery;
     const result = await svc.tasks(id, query);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const addTask = eh(async (req: Request, res: Response) => {
@@ -52,7 +60,9 @@ const addTask = eh(async (req: Request, res: Response) => {
     const body = req.body as TaskCreateBody;
     const result = await svc.addTask(id, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 const removeTask = eh(async (req: Request, res: Response) => {
@@ -60,7 +70,9 @@ const removeTask = eh(async (req: Request, res: Response) => {
     const { id } = req.params as unknown as TaskIdParams;
     const result = await svc.removeTask(id);
     ok(res, result);
-  } catch (e) { fail(res, e, (e as any).status || 400); }
+  } catch (e) {
+    fail(res, e, (e as any).status || 400);
+  }
 });
 
 export default { list, create, get, tasks, addTask, removeTask };

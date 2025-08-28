@@ -1,5 +1,5 @@
-import {z} from "zod";
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
+import { z } from 'zod';
 
 export const idParamSchema = z.object({
   id: z.string().min(1),
@@ -12,4 +12,4 @@ export const paginationQuerySchema = z.object({
 
 export const isoDateSchema = z
   .union([z.string(), z.date()])
-  .transform((v) => (typeof v === "string" ? dayjs(v).toDate() : v));
+  .transform((v) => (typeof v === 'string' ? dayjs(v).toDate() : v));

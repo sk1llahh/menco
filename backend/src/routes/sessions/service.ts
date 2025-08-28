@@ -1,14 +1,14 @@
-import prisma from "@/prisma";
-import { paginate } from "@/utils/pagination";
-import { error } from "@/utils/errors";
+import { PageResult } from '@/interfaces/pagination';
+import prisma from '@/prisma';
+import { error } from '@/utils/errors';
+import { paginate } from '@/utils/pagination';
+import { SessionItem, toSessionItem, toReviewItem, ReviewItem } from './mapper';
 import {
   ReviewCreateBody,
   SessionCreateBody,
   SessionListQuery,
   SessionUpdateStatusBody,
-} from "./schema";
-import { PageResult } from "@/interfaces/pagination";
-import { SessionItem, toSessionItem, toReviewItem, ReviewItem } from "./mapper";
+} from './schema';
 
 // LIST
 const list = async (q: SessionListQuery): Promise<PageResult<SessionItem>> => {
@@ -27,7 +27,7 @@ const list = async (q: SessionListQuery): Promise<PageResult<SessionItem>> => {
     async (offset, limit) => {
       const rows = await prisma.mentorSession.findMany({
         where,
-        orderBy: [{ startsAt: "desc" }, { createdAt: "desc" }],
+        orderBy: [{ startsAt: 'desc' }, { createdAt: 'desc' }],
         skip: offset,
         take: limit,
       });
@@ -39,7 +39,7 @@ const list = async (q: SessionListQuery): Promise<PageResult<SessionItem>> => {
 
 // CREATE (student -> mentor)
 const create = async (studentId: string, body: SessionCreateBody) => {
-  if (body.mentorId === studentId) throw error("You cannot book yourself", 400);
+  if (body.mentorId === studentId) throw error('You cannot book yourself', 400);
   const s = await prisma.mentorSession.create({
     data: {
       mentorId: body.mentorId,
@@ -47,29 +47,37 @@ const create = async (studentId: string, body: SessionCreateBody) => {
       startsAt: new Date(body.startsAt),
       endsAt: new Date(body.endsAt),
       price: body.price as any,
-      currency: body.currency ?? "KZT",
+      currency: body.currency ?? 'KZT',
       meetUrl: body.meetUrl,
       notes: body.notes,
-      status: "REQUESTED",
+      status: 'REQUESTED',
     },
   });
   return toSessionItem(s);
 };
 
 // UPDATE STATUS (mentor only or student cancel)
-const updateStatus = async (id: string, actorId: string, body: SessionUpdateStatusBody) => {
+const updateStatus = async (
+  id: string,
+  actorId: string,
+  body: SessionUpdateStatusBody,
+) => {
   const s = await prisma.mentorSession.findUnique({ where: { id } });
-  if (!s) throw error("Session not found", 404);
+  if (!s) throw error('Session not found', 404);
 
   // базовые правила (упростим):
   // CONFIRM/CANCEL может ментор; COMPLETED/NO_SHOW — после даты; CANCELED — любой участник
   const isMentor = s.mentorId === actorId;
   const isStudent = s.studentId === actorId;
 
-  if (body.status === "CONFIRMED" && !isMentor) throw error("Forbidden", 403);
-  if (body.status === "CANCELED" && !(isMentor || isStudent)) throw error("Forbidden", 403);
-  if ((body.status === "COMPLETED" || body.status === "NO_SHOW") && new Date() < s.endsAt) {
-    throw error("Too early to complete/no_show", 400);
+  if (body.status === 'CONFIRMED' && !isMentor) throw error('Forbidden', 403);
+  if (body.status === 'CANCELED' && !(isMentor || isStudent))
+    throw error('Forbidden', 403);
+  if (
+    (body.status === 'COMPLETED' || body.status === 'NO_SHOW') &&
+    new Date() < s.endsAt
+  ) {
+    throw error('Too early to complete/no_show', 400);
   }
 
   const upd = await prisma.mentorSession.update({
@@ -84,14 +92,20 @@ const updateStatus = async (id: string, actorId: string, body: SessionUpdateStat
 };
 
 // REVIEWS (student leaves one per session)
-const addReview = async (sessionId: string, authorId: string, body: ReviewCreateBody): Promise<ReviewItem> => {
+const addReview = async (
+  sessionId: string,
+  authorId: string,
+  body: ReviewCreateBody,
+): Promise<ReviewItem> => {
   const s = await prisma.mentorSession.findUnique({ where: { id: sessionId } });
-  if (!s) throw error("Session not found", 404);
-  if (s.studentId !== authorId) throw error("Only student can review", 403);
-  if (s.status !== "COMPLETED") throw error("Session must be completed", 400);
+  if (!s) throw error('Session not found', 404);
+  if (s.studentId !== authorId) throw error('Only student can review', 403);
+  if (s.status !== 'COMPLETED') throw error('Session must be completed', 400);
 
-  const exists = await prisma.sessionReview.findUnique({ where: { sessionId } });
-  if (exists) throw error("Review already exists", 409);
+  const exists = await prisma.sessionReview.findUnique({
+    where: { sessionId },
+  });
+  if (exists) throw error('Review already exists', 409);
 
   const r = await prisma.sessionReview.create({
     data: { sessionId, authorId, rating: body.rating, comment: body.comment },
@@ -104,7 +118,9 @@ const addReview = async (sessionId: string, authorId: string, body: ReviewCreate
   });
   const ratingCount = reviews.length;
   const ratingAvg =
-    ratingCount === 0 ? 0 : reviews.reduce((acc, v) => acc + v.rating, 0) / ratingCount;
+    ratingCount === 0
+      ? 0
+      : reviews.reduce((acc, v) => acc + v.rating, 0) / ratingCount;
 
   await prisma.mentorProfile.updateMany({
     where: { userId: s.mentorId },

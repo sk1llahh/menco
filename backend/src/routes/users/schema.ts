@@ -1,11 +1,11 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const UsersListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   q: z.string().optional(),
-  mode: z.enum(["LEARNER","MENTOR","BOTH"]).optional(),
-  status: z.enum(["ACTIVE","BLOCKED"]).optional(),
+  mode: z.enum(['LEARNER', 'MENTOR', 'BOTH']).optional(),
+  status: z.enum(['ACTIVE', 'BLOCKED']).optional(),
 });
 
 export const UserIdParamsSchema = z.object({ id: z.string().min(1) });

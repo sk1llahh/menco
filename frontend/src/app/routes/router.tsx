@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router';
-
 import App from '@/app/App.tsx';
 import { Providers } from '@/app/providers.tsx';
 import {
@@ -9,7 +8,6 @@ import {
 } from '@/app/routes/protected-route.tsx';
 import { ROUTES } from '@/shared/model/routes';
 import { LayoutSidebar } from '@/widgets/layout-sidebar';
-
 import { AuthLoader, AuthRoute } from './auth-route.tsx';
 
 const protectedRoutes = [

@@ -1,7 +1,5 @@
 import axios from 'axios';
-
 import { sessionManager } from '@/shared/model/session';
-
 import { CONFIG } from '../model/config';
 
 const api = axios.create({

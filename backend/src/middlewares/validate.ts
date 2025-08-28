@@ -1,6 +1,6 @@
-import {Request, Response, NextFunction} from "express";
-import {z, ZodError} from "zod";
-import {fail} from "@/utils/response";
+import { Request, Response, NextFunction } from 'express';
+import { z, ZodError } from 'zod';
+import { fail } from '@/utils/response';
 
 type Schemas = {
   body?: z.ZodType<any>;
@@ -10,7 +10,7 @@ type Schemas = {
 
 const shapeIssues = (error: ZodError) =>
   error.issues.map((i) => ({
-    path: i.path.join("."),
+    path: i.path.join('.'),
     message: i.message,
     code: i.code,
   }));
@@ -21,10 +21,14 @@ export const validate =
       if (schemas.body) {
         const r = schemas.body.safeParse(req.body);
         if (!r.success) {
-          return fail(res, {
-            message: "Validation error",
-            details: shapeIssues(r.error),
-          }, 422);
+          return fail(
+            res,
+            {
+              message: 'Validation error',
+              details: shapeIssues(r.error),
+            },
+            422,
+          );
         }
         req.body = r.data;
       }
@@ -32,10 +36,14 @@ export const validate =
       if (schemas.query) {
         const r = schemas.query.safeParse(req.query);
         if (!r.success) {
-          return fail(res, {
-            message: "Validation error",
-            details: shapeIssues(r.error),
-          }, 422);
+          return fail(
+            res,
+            {
+              message: 'Validation error',
+              details: shapeIssues(r.error),
+            },
+            422,
+          );
         }
         req.query = r.data as any;
       }
@@ -43,10 +51,14 @@ export const validate =
       if (schemas.params) {
         const r = schemas.params.safeParse(req.params);
         if (!r.success) {
-          return fail(res, {
-            message: "Validation error",
-            details: shapeIssues(r.error),
-          }, 422);
+          return fail(
+            res,
+            {
+              message: 'Validation error',
+              details: shapeIssues(r.error),
+            },
+            422,
+          );
         }
         req.params = r.data as Record<string, string>;
       }

@@ -1,11 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-
 import { authKeys } from '@/entities/user/model/const';
 import { IUser } from '@/entities/user/model/types';
 import { ROUTES } from '@/shared/model/routes';
 import { sessionManager } from '@/shared/model/session';
-
 import { userApi } from '../api';
 
 const useAuth = () => {

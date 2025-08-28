@@ -4,9 +4,9 @@ export type SessionItem = {
   studentId: string;
   startsAt: Date;
   endsAt: Date;
-  status: "REQUESTED"|"CONFIRMED"|"COMPLETED"|"CANCELED"|"NO_SHOW";
+  status: 'REQUESTED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED' | 'NO_SHOW';
   price: number | null;
-  currency: "KZT"|"USD"|"EUR"|"RUB" | null;
+  currency: 'KZT' | 'USD' | 'EUR' | 'RUB' | null;
   meetUrl: string | null;
   notes: string | null;
   createdAt: Date;

@@ -4,7 +4,7 @@ export type MentorCard = {
   title: string | null;
   about: string | null;
   ratePerHour: number | null;
-  currency: "KZT"|"USD"|"EUR"|"RUB" | null;
+  currency: 'KZT' | 'USD' | 'EUR' | 'RUB' | null;
   ratingAvg: number;
   ratingCount: number;
   isVerified: boolean;

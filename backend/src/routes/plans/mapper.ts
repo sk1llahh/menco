@@ -2,8 +2,8 @@ export type PlanItem = {
   id: string;
   name: string;
   price: number;
-  currency: "KZT"|"USD"|"EUR"|"RUB";
-  interval: "MONTH"|"YEAR";
+  currency: 'KZT' | 'USD' | 'EUR' | 'RUB';
+  interval: 'MONTH' | 'YEAR';
   features: string | null;
   createdAt: Date;
   updatedAt: Date;

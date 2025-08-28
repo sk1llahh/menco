@@ -23,7 +23,7 @@ export const toChallengeCard = (c: any): ChallengeCard => ({
 export type TaskItem = {
   id: string;
   order: number;
-  type: "TEXT"|"QUIZ"|"CHECKLIST"|"VIDEO";
+  type: 'TEXT' | 'QUIZ' | 'CHECKLIST' | 'VIDEO';
   title: string;
   content: any;
   isRequired: boolean;

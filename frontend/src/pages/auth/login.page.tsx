@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
-
 import { USER_FORM_NAME } from '@/entities/user/model/const';
 import { IUser, UserSchema } from '@/entities/user/model/types';
 import useAuth from '@/entities/user/model/useAuth';

@@ -1,24 +1,26 @@
-import prisma from "@/prisma";
-import { paginate } from "@/utils/pagination";
-import { error } from "@/utils/errors";
-import { PageResult } from "@/interfaces/pagination";
-import {
-  SubscriptionCreateBody,
-  SubscriptionListQuery,
-} from "./schema";
-import { SubscriptionItem, toSubscriptionItem } from "./mapper";
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
+import { PageResult } from '@/interfaces/pagination';
+import prisma from '@/prisma';
+import { error } from '@/utils/errors';
+import { paginate } from '@/utils/pagination';
+import { SubscriptionItem, toSubscriptionItem } from './mapper';
+import { SubscriptionCreateBody, SubscriptionListQuery } from './schema';
 
-const list = async (q: SubscriptionListQuery): Promise<PageResult<SubscriptionItem>> => {
+const list = async (
+  q: SubscriptionListQuery,
+): Promise<PageResult<SubscriptionItem>> => {
   const where: any = {};
   if (q.userId) where.userId = q.userId;
-  if (q.isActive) where.isActive = q.isActive === "true";
+  if (q.isActive) where.isActive = q.isActive === 'true';
 
   return paginate<SubscriptionItem>(
     () => prisma.subscription.count({ where }),
     async (offset, limit) => {
       const rows = await prisma.subscription.findMany({
-        where, orderBy: { createdAt: "desc" }, skip: offset, take: limit,
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limit,
       });
       return rows.map(toSubscriptionItem);
     },
@@ -29,27 +31,33 @@ const list = async (q: SubscriptionListQuery): Promise<PageResult<SubscriptionIt
 const my = async (userId: string): Promise<SubscriptionItem[]> => {
   const rows = await prisma.subscription.findMany({
     where: { userId, isActive: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
   return rows.map(toSubscriptionItem);
 };
 
 const create = async (userId: string, body: SubscriptionCreateBody) => {
   const plan = await prisma.plan.findUnique({ where: { id: body.planId } });
-  if (!plan) throw error("Plan not found", 404);
+  if (!plan) throw error('Plan not found', 404);
 
   // если у юзера есть активная подписка на этот план — 409
   const active = await prisma.subscription.findFirst({
     where: { userId, planId: body.planId, isActive: true },
   });
-  if (active) throw error("Subscription already active", 409);
+  if (active) throw error('Subscription already active', 409);
 
-  const periodEnd = plan.interval === "YEAR"
-    ? dayjs().add(1, "year").toDate()
-    : dayjs().add(1, "month").toDate();
+  const periodEnd =
+    plan.interval === 'YEAR'
+      ? dayjs().add(1, 'year').toDate()
+      : dayjs().add(1, 'month').toDate();
 
   const sub = await prisma.subscription.create({
-    data: { userId, planId: body.planId, isActive: true, currentPeriodEnd: periodEnd },
+    data: {
+      userId,
+      planId: body.planId,
+      isActive: true,
+      currentPeriodEnd: periodEnd,
+    },
   });
 
   // создаём PENDING платеж (опционально, как запись)
@@ -58,8 +66,8 @@ const create = async (userId: string, body: SubscriptionCreateBody) => {
       userId,
       amount: Number(plan.price) as any,
       currency: plan.currency,
-      status: "PENDING",
-      purpose: "SUBSCRIPTION",
+      status: 'PENDING',
+      purpose: 'SUBSCRIPTION',
       subscriptionId: sub.id,
       meta: { planName: plan.name, interval: plan.interval },
     } as any,
@@ -70,8 +78,8 @@ const create = async (userId: string, body: SubscriptionCreateBody) => {
 
 const cancel = async (id: string, userId: string) => {
   const sub = await prisma.subscription.findUnique({ where: { id } });
-  if (!sub) throw error("Subscription not found", 404);
-  if (sub.userId !== userId) throw error("Forbidden", 403);
+  if (!sub) throw error('Subscription not found', 404);
+  if (sub.userId !== userId) throw error('Forbidden', 403);
   if (!sub.isActive) return toSubscriptionItem(sub);
 
   const upd = await prisma.subscription.update({

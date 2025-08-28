@@ -1,4 +1,4 @@
 {
-    "chatgpt.openOnStartup": false,
-    "commentTranslate.targetLanguage": "ru"
+  "chatgpt.openOnStartup": false,
+  "commentTranslate.targetLanguage": "ru"
 }

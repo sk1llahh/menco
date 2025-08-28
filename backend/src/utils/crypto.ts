@@ -12,8 +12,8 @@ export const comparePassword = (plain: string, hashed: string) => {
 export const sha256 = (input: string) => {
   // Return a hex string digest instead of Hash instance
   return crypto.createHash('sha256').update(input).digest('hex');
-}
+};
 
 export const randomToken = (bytes = 64) => {
   return crypto.randomBytes(bytes).toString('hex');
-}
+};

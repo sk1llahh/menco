@@ -1,5 +1,4 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
-
 import { ROUTES } from '@/shared/model/routes';
 import { sessionManager } from '@/shared/model/session';
 

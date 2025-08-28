@@ -2,8 +2,8 @@ export type PaymentItem = {
   id: string;
   userId: string;
   amount: number;
-  currency: "KZT"|"USD"|"EUR"|"RUB";
-  status: "PENDING"|"SUCCEEDED"|"FAILED"|"REFUNDED";
+  currency: 'KZT' | 'USD' | 'EUR' | 'RUB';
+  status: 'PENDING' | 'SUCCEEDED' | 'FAILED' | 'REFUNDED';
   purpose: string;
   sessionId: string | null;
   subscriptionId: string | null;

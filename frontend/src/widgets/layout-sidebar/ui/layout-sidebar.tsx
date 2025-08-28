@@ -1,7 +1,6 @@
 import { Atom } from 'lucide-react';
 import { useState } from 'react';
 import { Link, Outlet } from 'react-router';
-
 import { ROUTES } from '@/shared/model/routes';
 
 export const LayoutSidebar = (): React.ReactNode => {

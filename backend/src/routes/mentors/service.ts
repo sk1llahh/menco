@@ -1,6 +1,8 @@
-import prisma from "@/prisma";
-import { paginate } from "@/utils/pagination";
-import { error } from "@/utils/errors";
+import { PageResult } from '@/interfaces/pagination';
+import prisma from '@/prisma';
+import { error } from '@/utils/errors';
+import { paginate } from '@/utils/pagination';
+import { toMentorCard, MentorCard } from './mapper';
 import {
   ApplicationCreateBody,
   ApplicationUpdateBody,
@@ -9,12 +11,12 @@ import {
   AvailabilityUpsertBody,
   MentorSearchQuery,
   MentorUpdateBody,
-} from "./schema";
-import { PageResult } from "@/interfaces/pagination";
-import { toMentorCard, MentorCard } from "./mapper";
+} from './schema';
 
 // search mentor cards
-const search = async (q: MentorSearchQuery): Promise<PageResult<MentorCard>> => {
+const search = async (
+  q: MentorSearchQuery,
+): Promise<PageResult<MentorCard>> => {
   const where: any = {};
   if (q.minRating) where.ratingAvg = { gte: q.minRating };
   if (q.maxRate) where.ratePerHour = { lte: q.maxRate as any };
@@ -23,10 +25,14 @@ const search = async (q: MentorSearchQuery): Promise<PageResult<MentorCard>> => 
   // q по имени/тайтлу/about/скиллам
   const or: any[] = [];
   if (q.q) {
-    or.push({ title: { contains: q.q, mode: "insensitive" } });
-    or.push({ about: { contains: q.q, mode: "insensitive" } });
-    or.push({ user: { name: { contains: q.q, mode: "insensitive" } } });
-    or.push({ skills: { some: { skill: { name: { contains: q.q, mode: "insensitive" } } } } });
+    or.push({ title: { contains: q.q, mode: 'insensitive' } });
+    or.push({ about: { contains: q.q, mode: 'insensitive' } });
+    or.push({ user: { name: { contains: q.q, mode: 'insensitive' } } });
+    or.push({
+      skills: {
+        some: { skill: { name: { contains: q.q, mode: 'insensitive' } } },
+      },
+    });
   }
   if (or.length) where.OR = or;
 
@@ -39,12 +45,13 @@ const search = async (q: MentorSearchQuery): Promise<PageResult<MentorCard>> => 
           user: { select: { name: true } },
           skills: { include: { skill: true } },
         },
-        orderBy: [{ ratingAvg: "desc" }, { ratingCount: "desc" }],
-        skip: offset, take: limit,
+        orderBy: [{ ratingAvg: 'desc' }, { ratingCount: 'desc' }],
+        skip: offset,
+        take: limit,
       });
       return rows.map(toMentorCard);
     },
-    { page: q.page, limit: q.limit }
+    { page: q.page, limit: q.limit },
   );
 };
 
@@ -55,7 +62,10 @@ const upsertMe = async (userId: string, body: MentorUpdateBody) => {
     where: { userId },
     update: data,
     create: { userId, ...data },
-    include: { user: { select: { name: true } }, skills: { include: { skill: true } } },
+    include: {
+      user: { select: { name: true } },
+      skills: { include: { skill: true } },
+    },
   });
   return toMentorCard(mp);
 };
@@ -67,16 +77,22 @@ const availabilityList = async (userId: string, q: AvailabilityListQuery) => {
     () => prisma.availabilitySlot.count({ where }),
     async (offset, limit) => {
       return prisma.availabilitySlot.findMany({
-        where, orderBy: { startsAt: "asc" }, skip: offset, take: limit,
+        where,
+        orderBy: { startsAt: 'asc' },
+        skip: offset,
+        take: limit,
       });
     },
-    { page: q.page, limit: q.limit }
+    { page: q.page, limit: q.limit },
   );
 };
 
-const availabilityCreate = async (userId: string, body: AvailabilityUpsertBody) => {
+const availabilityCreate = async (
+  userId: string,
+  body: AvailabilityUpsertBody,
+) => {
   const mp = await prisma.mentorProfile.findUnique({ where: { userId } });
-  if (!mp) throw error("Mentor profile not found", 404);
+  if (!mp) throw error('Mentor profile not found', 404);
   return prisma.availabilitySlot.create({
     data: {
       mentorProfileId: mp.id,
@@ -86,12 +102,16 @@ const availabilityCreate = async (userId: string, body: AvailabilityUpsertBody) 
   });
 };
 
-const availabilityDelete = async (userId: string, params: AvailabilityIdParams) => {
+const availabilityDelete = async (
+  userId: string,
+  params: AvailabilityIdParams,
+) => {
   const slot = await prisma.availabilitySlot.findUnique({
     where: { id: params.id },
     include: { mentorProfile: true },
   });
-  if (!slot || slot.mentorProfile.userId !== userId) throw error("Slot not found", 404);
+  if (!slot || slot.mentorProfile.userId !== userId)
+    throw error('Slot not found', 404);
   await prisma.availabilitySlot.delete({ where: { id: params.id } });
   return { ok: true as const };
 };
@@ -99,17 +119,20 @@ const availabilityDelete = async (userId: string, params: AvailabilityIdParams) 
 // applications
 const apply = async (userId: string, body: ApplicationCreateBody) => {
   const exists = await prisma.mentorApplication.findFirst({
-    where: { userId, status: "PENDING" },
+    where: { userId, status: 'PENDING' },
   });
-  if (exists) throw error("Application already pending", 409);
+  if (exists) throw error('Application already pending', 409);
 
   return prisma.mentorApplication.create({
-    data: { userId, message: body.message ?? null, status: "PENDING" },
+    data: { userId, message: body.message ?? null, status: 'PENDING' },
   });
 };
 
 // (для админ-панели) — обновить статус заявки
-const setApplicationStatus = async (appId: string, body: ApplicationUpdateBody) => {
+const setApplicationStatus = async (
+  appId: string,
+  body: ApplicationUpdateBody,
+) => {
   return prisma.mentorApplication.update({
     where: { id: appId },
     data: { status: body.status, reviewedAt: new Date() },

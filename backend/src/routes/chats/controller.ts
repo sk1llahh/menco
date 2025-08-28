@@ -1,14 +1,14 @@
-import svc from "./service";
-import { Request, Response } from "express";
-import eh from "express-async-handler";
-import { ok, fail } from "@/utils/response";
+import { Request, Response } from 'express';
+import eh from 'express-async-handler';
+import { ok, fail } from '@/utils/response';
 import {
   ChatListQuery,
   ChatCreateBody,
   MessageCreateBody,
   AddMemberBody,
   ChatIdParams,
-} from "./schema";
+} from './schema';
+import svc from './service';
 
 const list = eh(async (req: Request, res: Response) => {
   try {
@@ -16,7 +16,9 @@ const list = eh(async (req: Request, res: Response) => {
     const query = req.query as unknown as ChatListQuery;
     const result = await svc.list(userId, query);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const create = eh(async (req: Request, res: Response) => {
@@ -25,7 +27,9 @@ const create = eh(async (req: Request, res: Response) => {
     const body = req.body as ChatCreateBody;
     const result = await svc.create(userId, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const postMessage = eh(async (req: Request, res: Response) => {
@@ -35,7 +39,9 @@ const postMessage = eh(async (req: Request, res: Response) => {
     const body = req.body as MessageCreateBody;
     const result = await svc.postMessage(id, userId, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const addMember = eh(async (req: Request, res: Response) => {
@@ -44,7 +50,9 @@ const addMember = eh(async (req: Request, res: Response) => {
     const body = req.body as AddMemberBody;
     const result = await svc.addMember(id, body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 export default { list, create, postMessage, addMember };

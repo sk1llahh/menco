@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import { CONFIG } from "./config";
+import jwt from 'jsonwebtoken';
+import { CONFIG } from './config';
 
 export interface AccessPayload {
   userId: string;

@@ -1,13 +1,13 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const QnaListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  q: z.string().optional(),               // поиск по title/body
-  targetUserId: z.string().optional(),    // вопросы конкретному ментору
-  challengeId: z.string().optional(),     // вопросы по челленджу
+  q: z.string().optional(), // поиск по title/body
+  targetUserId: z.string().optional(), // вопросы конкретному ментору
+  challengeId: z.string().optional(), // вопросы по челленджу
   authorId: z.string().optional(),
-  onlyAnonymous: z.enum(["true","false"]).optional(),
+  onlyAnonymous: z.enum(['true', 'false']).optional(),
 });
 
 export const QnaIdParamsSchema = z.object({ id: z.string().min(1) });

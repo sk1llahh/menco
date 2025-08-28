@@ -2,7 +2,7 @@ export type ProgressItem = {
   id: string;
   taskId: string;
   taskTitle: string;
-  status: "PENDING" | "COMPLETED" | "SKIPPED";
+  status: 'PENDING' | 'COMPLETED' | 'SKIPPED';
   completedAt: Date | null;
   notes: string | null;
 };

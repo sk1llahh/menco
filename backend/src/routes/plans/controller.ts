@@ -1,15 +1,22 @@
-import svc from "./service";
-import { Request, Response } from "express";
-import eh from "express-async-handler";
-import { ok, fail } from "@/utils/response";
-import { PlanCreateBody, PlanIdParams, PlanListQuery, PlanUpdateBody } from "./schema";
+import { Request, Response } from 'express';
+import eh from 'express-async-handler';
+import { ok, fail } from '@/utils/response';
+import {
+  PlanCreateBody,
+  PlanIdParams,
+  PlanListQuery,
+  PlanUpdateBody,
+} from './schema';
+import svc from './service';
 
 const list = eh(async (req: Request, res: Response) => {
   try {
     const query = req.query as unknown as PlanListQuery;
     const result = await svc.list(query);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const get = eh(async (req: Request, res: Response) => {
@@ -17,7 +24,9 @@ const get = eh(async (req: Request, res: Response) => {
     const { id } = req.params as unknown as PlanIdParams;
     const result = await svc.get(id);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const create = eh(async (req: Request, res: Response) => {
@@ -25,7 +34,9 @@ const create = eh(async (req: Request, res: Response) => {
     const body = req.body as PlanCreateBody;
     const result = await svc.create(body);
     ok(res, result, 201);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const update = eh(async (req: Request, res: Response) => {
@@ -34,7 +45,9 @@ const update = eh(async (req: Request, res: Response) => {
     const body = req.body as PlanUpdateBody;
     const result = await svc.update(id, body);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 const remove = eh(async (req: Request, res: Response) => {
@@ -42,7 +55,9 @@ const remove = eh(async (req: Request, res: Response) => {
     const { id } = req.params as unknown as PlanIdParams;
     const result = await svc.remove(id);
     ok(res, result);
-  } catch (e) { fail(res, e); }
+  } catch (e) {
+    fail(res, e);
+  }
 });
 
 export default { list, get, create, update, remove };

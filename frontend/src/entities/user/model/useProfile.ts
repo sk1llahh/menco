@@ -1,8 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-
 import { authKeys } from '@/entities/user/model/const';
-
 import { userApi } from '../api';
 
 const useProfile = () => {

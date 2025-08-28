@@ -1,19 +1,22 @@
-import prisma from "@/prisma";
-import { paginate } from "@/utils/pagination";
-import { PageResult } from "@/interfaces/pagination";
-import { NotificationListQuery } from "./schema";
-import { NotificationItem, toNotificationItem } from "./mapper";
+import { PageResult } from '@/interfaces/pagination';
+import prisma from '@/prisma';
+import { paginate } from '@/utils/pagination';
+import { NotificationItem, toNotificationItem } from './mapper';
+import { NotificationListQuery } from './schema';
 
-const list = async (userId: string, q: NotificationListQuery): Promise<PageResult<NotificationItem>> => {
+const list = async (
+  userId: string,
+  q: NotificationListQuery,
+): Promise<PageResult<NotificationItem>> => {
   const where: any = { userId };
-  if (q.unreadOnly) where.readAt = q.unreadOnly === "true" ? null : undefined;
+  if (q.unreadOnly) where.readAt = q.unreadOnly === 'true' ? null : undefined;
 
   return paginate<NotificationItem>(
     () => prisma.notification.count({ where }),
     async (offset, limit) => {
       const rows = await prisma.notification.findMany({
         where,
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
         skip: offset,
         take: limit,
       });
@@ -26,12 +29,18 @@ const list = async (userId: string, q: NotificationListQuery): Promise<PageResul
 const markRead = async (userId: string, id: string) => {
   const n = await prisma.notification.findUnique({ where: { id } });
   if (!n || n.userId !== userId) return { ok: true as const };
-  await prisma.notification.update({ where: { id }, data: { readAt: new Date() } });
+  await prisma.notification.update({
+    where: { id },
+    data: { readAt: new Date() },
+  });
   return { ok: true as const };
 };
 
 const markAllRead = async (userId: string) => {
-  await prisma.notification.updateMany({ where: { userId, readAt: null }, data: { readAt: new Date() } });
+  await prisma.notification.updateMany({
+    where: { userId, readAt: null },
+    data: { readAt: new Date() },
+  });
   return { ok: true as const };
 };
 

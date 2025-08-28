@@ -18,12 +18,12 @@ export function parsePagination(
   const limit = Number.isFinite(l)
     ? Math.min(Math.max(1, Math.floor(l)), MAX_LIMIT)
     : DEFAULT_LIMIT;
-  return {page, limit};
+  return { page, limit };
 }
 
 export function buildMeta(
   totalItems: number,
-  {page, limit}: PaginationParams,
+  { page, limit }: PaginationParams,
 ): PageMeta {
   const totalPages = Math.max(1, Math.ceil(totalItems / limit));
   const safePage = Math.min(page, totalPages);
@@ -47,5 +47,5 @@ export async function paginate<T>(
   const meta = buildMeta(await totalCountFn(), params);
   const items =
     meta.totalItems === 0 ? [] : await pageFetchFn(meta.offset, meta.limit);
-  return {items, meta};
+  return { items, meta };
 }

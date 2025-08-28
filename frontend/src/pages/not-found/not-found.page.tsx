@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-
 import { ROUTES } from '@/shared/model/routes';
 
 const Page = () => {

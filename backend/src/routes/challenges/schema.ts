@@ -1,11 +1,11 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const ChallengeListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   q: z.string().optional(),
   category: z.string().optional(),
-  isPremium: z.enum(["true","false"]).optional(),
+  isPremium: z.enum(['true', 'false']).optional(),
 });
 
 export const ChallengeCreateSchema = z.object({
@@ -26,7 +26,7 @@ export const TaskListQuerySchema = z.object({
 
 export const TaskCreateSchema = z.object({
   order: z.coerce.number().int().min(1),
-  type: z.enum(["TEXT","QUIZ","CHECKLIST","VIDEO"]).default("TEXT"),
+  type: z.enum(['TEXT', 'QUIZ', 'CHECKLIST', 'VIDEO']).default('TEXT'),
   title: z.string().min(1),
   content: z.any(),
   isRequired: z.boolean().default(true),

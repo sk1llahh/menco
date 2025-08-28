@@ -1,16 +1,21 @@
-import prisma from "@/prisma";
-import dayjs from "dayjs";
-import { CONFIG } from "@/utils/config";
-import { randomToken, sha256, hashPassword, comparePassword } from "@/utils/crypto";
-import { signAccessToken } from "@/utils/jwt";
-import { error } from "@/utils/errors";
-import { LoginBody, RefreshBody, RegisterBody } from "./schema";
-import { AuthResult, toAuthUser } from "./mapper";
+import dayjs from 'dayjs';
+import prisma from '@/prisma';
+import { CONFIG } from '@/utils/config';
+import {
+  randomToken,
+  sha256,
+  hashPassword,
+  comparePassword,
+} from '@/utils/crypto';
+import { error } from '@/utils/errors';
+import { signAccessToken } from '@/utils/jwt';
+import { AuthResult, toAuthUser } from './mapper';
+import { LoginBody, RefreshBody, RegisterBody } from './schema';
 
 const createRefreshToken = async (userId: string): Promise<string> => {
   const raw = randomToken(64);
   const tokenHash = sha256(raw);
-  const expiresAt = dayjs().add(CONFIG.REFRESH_TTL_DAYS, "day").toDate();
+  const expiresAt = dayjs().add(CONFIG.REFRESH_TTL_DAYS, 'day').toDate();
   await prisma.refreshToken.create({
     data: { userId, tokenHash, expiresAt },
   });
@@ -19,7 +24,7 @@ const createRefreshToken = async (userId: string): Promise<string> => {
 
 const register = async (body: RegisterBody): Promise<AuthResult> => {
   const exists = await prisma.user.findUnique({ where: { login: body.login } });
-  if (exists) throw error("User already exists", 409);
+  if (exists) throw error('User already exists', 409);
 
   const pwd = await hashPassword(body.password);
   const user = await prisma.user.create({
@@ -40,10 +45,10 @@ const register = async (body: RegisterBody): Promise<AuthResult> => {
 
 const login = async (body: LoginBody): Promise<AuthResult> => {
   const user = await prisma.user.findUnique({ where: { login: body.login } });
-  if (!user) throw error("User not found", 404);
+  if (!user) throw error('User not found', 404);
 
   const ok = await comparePassword(body.password, user.password);
-  if (!ok) throw error("Invalid credentials", 401);
+  if (!ok) throw error('Invalid credentials', 401);
 
   const accessToken = signAccessToken({ userId: user.id, login: user.login });
   const refreshToken = await createRefreshToken(user.id);
@@ -52,18 +57,21 @@ const login = async (body: LoginBody): Promise<AuthResult> => {
 
 const refresh = async (token: string): Promise<AuthResult> => {
   const hash = sha256(token);
-  const current = await prisma.refreshToken.findUnique({ where: { tokenHash: hash } });
-  if (!current) throw error("Invalid refresh token", 401);
-  if (current.revokedAt) throw error("Refresh token revoked", 401);
-  if (current.expiresAt < dayjs().toDate()) throw error("Refresh token expired", 401);
+  const current = await prisma.refreshToken.findUnique({
+    where: { tokenHash: hash },
+  });
+  if (!current) throw error('Invalid refresh token', 401);
+  if (current.revokedAt) throw error('Refresh token revoked', 401);
+  if (current.expiresAt < dayjs().toDate())
+    throw error('Refresh token expired', 401);
 
   const user = await prisma.user.findUnique({ where: { id: current.userId } });
-  if (!user) throw error("User not found", 401);
+  if (!user) throw error('User not found', 401);
 
   const newRaw = await prisma.$transaction(async (tx) => {
     const raw2 = randomToken(64);
     const hash2 = sha256(raw2);
-    const expiresAt = dayjs().add(CONFIG.REFRESH_TTL_DAYS, "day").toDate();
+    const expiresAt = dayjs().add(CONFIG.REFRESH_TTL_DAYS, 'day').toDate();
 
     const next = await tx.refreshToken.create({
       data: { userId: user.id, tokenHash: hash2, expiresAt },
@@ -82,9 +90,14 @@ const refresh = async (token: string): Promise<AuthResult> => {
 const logout = async (refreshToken?: string) => {
   if (!refreshToken) return { ok: true as const };
   const hash = sha256(refreshToken);
-  const rec = await prisma.refreshToken.findUnique({ where: { tokenHash: hash } });
+  const rec = await prisma.refreshToken.findUnique({
+    where: { tokenHash: hash },
+  });
   if (!rec) return { ok: true as const };
-  await prisma.refreshToken.update({ where: { id: rec.id }, data: { revokedAt: dayjs().toDate() } });
+  await prisma.refreshToken.update({
+    where: { id: rec.id },
+    data: { revokedAt: dayjs().toDate() },
+  });
   return { ok: true as const };
 };
 
