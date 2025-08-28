@@ -53,4 +53,6 @@ frontend/package-lock.json
 *.tgz
 *.gz
 backend/generated/prisma
+backend/generated/
+backend/prisma/
 

@@ -20,6 +20,7 @@ export default [
       '**/.husky/**',
       'backend/generated/**',
       'backend/generated/prisma/**',
+      'backend/prisma/**',
     ],
   },
 

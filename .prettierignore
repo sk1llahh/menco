@@ -32,3 +32,6 @@ coverage/
 # Generated files
 public/
 generated/
+backend/generated/
+backend/generated/prisma/
+backend/prisma/
