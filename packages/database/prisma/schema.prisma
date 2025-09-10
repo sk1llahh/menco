@@ -1,19 +1,490 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
-  output = "../generated/client"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum UserMode {
+  LEARNER
+  MENTOR
+  BOTH
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+enum ChatType {
+  DIRECT
+  GROUP
+}
+
+enum ChatMemberRole {
+  OWNER
+  MEMBER
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+}
+
+enum TaskType {
+  TEXT
+  QUIZ
+  CHECKLIST
+  VIDEO
+}
+
+enum ProgressStatus {
+  PENDING
+  COMPLETED
+  SKIPPED
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELED
+}
+
+enum SessionStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELED
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum PlanInterval {
+  MONTH
+  YEAR
+}
+
+enum Currency {
+  KZT
+  USD
+  EUR
+  RUB
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
+  id        String     @id @default(cuid())
+  login     String     @unique
+  password  String
+  email     String?    @unique
+  name      String?
+  avatarUrl String?
+  bio       String?
+  timezone  String?
+  locale    String?
+  mode      UserMode   @default(BOTH)
+  status    UserStatus @default(ACTIVE)
+
+  mentorProfile MentorProfile?
+  challenges    Challenge[]    @relation("ChallengeAuthor")
+  enrollments   Enrollment[]
+  progresses    Progress[]
+  messages      Message[]      @relation("MessageSender")
+  chatMembers   ChatMember[]
+  refreshTokens RefreshToken[] @relation("UserRefreshTokens")
+
+  chatsCreated         Chat[]        @relation("ChatCreatedBy")
+  qnaTargetedQuestions QnaQuestion[] @relation("QnaTargetUser")
+
+  mentorApplications         MentorApplication[] @relation("MentorApplicationsByUser")
+  mentorshipRequestsSent     MentorshipRequest[] @relation("RequestsFromStudent")
+  mentorshipRequestsReceived MentorshipRequest[] @relation("RequestsToMentor")
+  sessionsAsStudent          MentorSession[]     @relation("SessionsAsStudent")
+  sessionsAsMentor           MentorSession[]     @relation("SessionsAsMentor")
+  sessionReviews             SessionReview[]     @relation("SessionReviewAuthor")
+  payments                   Payment[]           @relation("UserPayments")
+  subscriptions              Subscription[]
+  qnaQuestions               QnaQuestion[]       @relation("QnaAuthor")
+  qnaAnswers                 QnaAnswer[]         @relation("QnaAnswerAuthor")
+  notifications              Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([mode, status])
+}
+
+model RefreshToken {
+id           String   @id @default(cuid())
+  userId       String
+  tokenHash    String   @unique
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  replacedById String?
+  createdAt    DateTime @default(now())
+
+  user         User     @relation("UserRefreshTokens", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model MentorProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  title       String?
+  about       String?
+  ratePerHour Decimal? @db.Decimal(10, 2)
+  currency    Currency @default(KZT)
+  ratingAvg   Float    @default(0)
+  ratingCount Int      @default(0)
+  isVerified  Boolean  @default(false)
+
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills       MentorSkill[]
+  availability AvailabilitySlot[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ratePerHour, ratingAvg])
+}
+
+model Skill {
+  id      String        @id @default(cuid())
+  name    String        @unique
+  slug    String        @unique
+  mentors MentorSkill[]
+}
+
+model MentorSkill {
+  mentorProfileId String
+  skillId         String
+
+  mentorProfile MentorProfile @relation(fields: [mentorProfileId], references: [id], onDelete: Cascade)
+  skill         Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([mentorProfileId, skillId])
+}
+
+model AvailabilitySlot {
+  id              String   @id @default(cuid())
+  mentorProfileId String
+  startsAt        DateTime
+  endsAt          DateTime
+  isBooked        Boolean  @default(false)
+
+  mentorProfile MentorProfile @relation(fields: [mentorProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([mentorProfileId, startsAt, endsAt])
+  @@index([mentorProfileId, startsAt, endsAt])
+}
+
+model MentorApplication {
+  id      String            @id @default(cuid())
+  userId  String
+  message String?
+  status  ApplicationStatus @default(PENDING)
+
+  user       User      @relation("MentorApplicationsByUser", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([status, createdAt])
+}
+
+
+model Challenge {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  category    String?
+  level       String?
+  isPremium   Boolean @default(false)
+  createdById String?
+
+  author      User?        @relation("ChallengeAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  tasks       Task[]
+  enrollments Enrollment[]
+  groupChat   Chat?        @relation("ChallengeGroupChat")
+
+  qnaQuestions QnaQuestion[] @relation("QnaChallenge")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category, isPremium])
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  challengeId String
+  order       Int
+  type        TaskType @default(TEXT)
+  title       String
+  content     Json
+  isRequired  Boolean  @default(true)
+
+  challenge  Challenge  @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  progresses Progress[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([challengeId, order])
+  @@index([challengeId, order])
+}
+
+model Enrollment {
+  id          String    @id @default(cuid())
+  userId      String
+  challengeId String
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  streak      Int       @default(0)
+  isActive    Boolean   @default(true)
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, challengeId])
+  @@index([isActive, startedAt])
+}
+
+model Progress {
+  id          String         @id @default(cuid())
+  userId      String
+  taskId      String
+  status      ProgressStatus @default(PENDING)
+  completedAt DateTime?
+  notes       String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId])
+  @@index([status])
+}
+
+
+model Chat {
+  id          String   @id @default(cuid())
+  type        ChatType @default(DIRECT)
+  title       String?
+  createdById String?
+  challengeId String?  @unique
+
+  createdBy User? @relation("ChatCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  members   ChatMember[]
+  messages  Message[]
+  challenge Challenge?   @relation("ChallengeGroupChat", fields: [challengeId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([type])
+}
+
+model ChatMember {
+  chatId   String
+  userId   String
+  role     ChatMemberRole @default(MEMBER)
+  joinedAt DateTime       @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, userId])
+}
+
+model Message {
+  id        String      @id @default(cuid())
+  chatId    String
+  senderId  String?
+  type      MessageType @default(TEXT)
+  content   String
+  meta      Json?
+  createdAt DateTime    @default(now())
+
+  chat   Chat  @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender User? @relation("MessageSender", fields: [senderId], references: [id], onDelete: SetNull)
+
+  @@index([chatId, createdAt])
+}
+
+model QnaQuestion {
+  id           String  @id @default(cuid())
+  authorId     String?
+  targetUserId String?
+  challengeId  String?
+  title        String
+  body         String
+  isAnonymous  Boolean @default(false)
+
+  author User? @relation("QnaAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  targetUser User?      @relation("QnaTargetUser", fields: [targetUserId], references: [id], onDelete: SetNull)
+  challenge  Challenge? @relation("QnaChallenge", fields: [challengeId], references: [id], onDelete: SetNull)
+
+  answers   QnaAnswer[]
+  createdAt DateTime    @default(now())
+
+  @@index([targetUserId])
+  @@index([challengeId])
+}
+
+model QnaAnswer {
+  id         String  @id @default(cuid())
+  questionId String
+  authorId   String?
+  body       String
+
+  question QnaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  author   User?       @relation("QnaAnswerAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+}
+
+
+model MentorshipRequest {
+  id        String            @id @default(cuid())
+  studentId String
+  mentorId  String
+  message   String?
+  status    ApplicationStatus @default(PENDING)
+
+  student User @relation("RequestsFromStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  mentor  User @relation("RequestsToMentor", fields: [mentorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, mentorId])
+  @@index([status, createdAt])
+}
+
+model MentorSession {
+  id        String        @id @default(cuid())
+  mentorId  String
+  studentId String
+  startsAt  DateTime
+  endsAt    DateTime
+  status    SessionStatus @default(REQUESTED)
+  price     Decimal?      @db.Decimal(10, 2)
+  currency  Currency      @default(KZT)
+  meetUrl   String?
+  notes     String?
+
+  mentor  User           @relation("SessionsAsMentor", fields: [mentorId], references: [id], onDelete: Cascade)
+  student User           @relation("SessionsAsStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  review  SessionReview?
+
+  payments Payment[] @relation("PaymentSession")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([mentorId, startsAt])
+  @@index([studentId, startsAt])
+  @@index([status])
+}
+
+model SessionReview {
+  id        String  @id @default(cuid())
+  sessionId String  @unique
+  authorId  String
+  rating    Int
+  comment   String?
+
+  session MentorSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  author  User          @relation("SessionReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+
+model Plan {
+  id       String       @id @default(cuid())
+  name     String       @unique
+  price    Decimal      @db.Decimal(10, 2)
+  currency Currency     @default(KZT)
+  interval PlanInterval @default(MONTH)
+  features String?
+
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id               String    @id @default(cuid())
+  userId           String
+  planId           String
+  isActive         Boolean   @default(true)
+  currentPeriodEnd DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  payments Payment[] @relation("PaymentSubscription")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, isActive])
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  userId         String
+  amount         Decimal       @db.Decimal(10, 2)
+  currency       Currency      @default(KZT)
+  status         PaymentStatus @default(PENDING)
+  purpose        String
+  sessionId      String?
+  subscriptionId String?
+
+  user User @relation("UserPayments", fields: [userId], references: [id], onDelete: Cascade)
+
+  session      MentorSession? @relation("PaymentSession", fields: [sessionId], references: [id], onDelete: SetNull)
+  subscription Subscription?  @relation("PaymentSubscription", fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
+}
+
+
+model Notification {
+  id      String    @id @default(cuid())
+  userId  String
+  type    String 
+  payload Json?
+  readAt  DateTime?
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId, readAt])
 }

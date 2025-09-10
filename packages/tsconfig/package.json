@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "name": "@repo/tsconfig",
+  "files": [
+    "base.json"
+  ]
+}

@@ -1,32 +1,43 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "cacheDir": ".turbo/cache",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^check-types", "^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["**/build/**", "**/dist/**"]
     },
-    "db:migrate:dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:migrate:deploy": {
-      "cache": false
-    },
-    "db:push": {
-      "cache": false
-    },
-    "db:seed": {
-      "cache": false
+    "check-types": {
+      "dependsOn": ["^check-types"]
     },
     "dev": {
       "cache": false,
+      "persistent": true,
+      "with": ["db:studio"]
+    },
+    "start": {
+      "cache": false,
+      "persistent": true,
+      "with": ["db:local"]
+    },
+    "db:local": {
+      "cache": false,
       "persistent": true
     },
-    "generate": {
-      "dependsOn": ["^generate"],
-      "cache": false
+    "db:studio": {
+      "cache": false,
+      "persistent": true,
+      "with": ["db:local"]
     },
-    "lint": {}
+    "db:migrate": {
+      "cache": false,
+      "persistent": true,
+      "with": ["db:local"]
+    },
+    "db:generate": {
+      "cache": false,
+      "persistent": true
+    }
   }
 }
