@@ -2,23 +2,54 @@ import { config as loadEnv } from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { z } from "zod";
+
+function findRepoRoot(start: string): string | undefined {
+  let curr = start;
+  while (true) {
+    const marker1 = path.join(curr, "pnpm-workspace.yaml");
+    const marker2 = path.join(curr, "turbo.json");
+    if (fs.existsSync(marker1) || fs.existsSync(marker2)) return curr;
+    const parent = path.dirname(curr);
+    if (!parent || parent === curr) return undefined;
+    curr = parent;
+  }
+}
+
 const resolvedEnvPath = (() => {
   const override = process.env.DOTENV_CONFIG_PATH;
   if (override && fs.existsSync(override)) return override;
+
   const pkgDir = path.dirname(fileURLToPath(new URL("../", import.meta.url)));
-  const pkgEnv = path.join(pkgDir, ".env");
-  if (fs.existsSync(pkgEnv)) return pkgEnv;
-  const rootEnv = path.resolve(process.cwd(), ".env");
-  if (fs.existsSync(rootEnv)) return rootEnv;
+  const repoRoot = findRepoRoot(pkgDir) ?? findRepoRoot(process.cwd());
+  const envName = process.env.NODE_ENV || "development";
+
+  if (repoRoot) {
+    const names = [
+      `.env.${envName}.local`,
+      `.env.local`,
+      `.env.${envName}`,
+      `.env`,
+      `env.${envName}.local`,
+      `env.local`,
+      `env.${envName}`,
+      `env`,
+    ];
+    for (const n of names) {
+      const p = path.join(repoRoot, n);
+      if (fs.existsSync(p)) return p;
+    }
+  }
+
   return undefined;
 })();
 
 if (resolvedEnvPath) {
   loadEnv({ path: resolvedEnvPath });
+  process.env.__ENV_FILE = resolvedEnvPath;
 } else {
   loadEnv();
 }
-import { z } from "zod";
 
 const csv = (v?: string | null): string[] =>
   (v ?? "")

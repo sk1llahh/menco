@@ -48,8 +48,9 @@ const postMessage = eh(async (req: Request, res: Response) => {
 const addMember = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as ChatIdParams;
+    const actorId = (req as any).user.userId;
     const body = req.body as AddMemberBody;
-    const result = await svc.addMember(id, body);
+    const result = await svc.addMember(id, actorId, body);
     ok(res, result, 201);
   } catch (e) {
     fail(res, e);

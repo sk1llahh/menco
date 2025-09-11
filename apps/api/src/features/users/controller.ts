@@ -18,6 +18,11 @@ const list = eh(async (req: Request, res: Response) => {
 const getById = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as UserIdParams;
+    const actorId = (req as any).user.userId as string;
+    const actorIsAdmin = Boolean((req as any).user?.isAdmin);
+    if (!actorIsAdmin && actorId !== id) {
+      return fail(res, "Forbidden", 403);
+    }
     const result = await svc.getById(id);
     ok(res, result);
   } catch (e) {

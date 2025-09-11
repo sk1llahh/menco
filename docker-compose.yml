@@ -1,6 +1,23 @@
-version: "3"
+version: "3.9"
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: edu
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   web:
     container_name: web
     build:
@@ -8,24 +25,24 @@ services:
       dockerfile: ./apps/web/Dockerfile
     restart: always
     ports:
-      - 3000:3000
-    networks:
-      - app_network
+      - "3000:3000"
+
   api:
     container_name: api
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
     restart: always
-    env_file:
-      - ./packages/config/.env
     environment:
-      - BACKEND_PORT=3001
+      BACKEND_PORT: 3001
+      FRONTEND_URL: http://localhost:5173,http://localhost:3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/edu?schema=public
+      JWT_SECRET: dev-secret
     ports:
-      - 3001:3001
-    networks:
-      - app_network
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
-networks:
-  app_network:
-    external: true
+volumes:
+  db_data:

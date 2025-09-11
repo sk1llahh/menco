@@ -74,9 +74,16 @@ const tasks = async (
   );
 };
 
-const addTask = async (challengeId: string, body: TaskCreateBody) => {
+const addTask = async (
+  challengeId: string,
+  body: TaskCreateBody,
+  actorId: string,
+  actorIsAdmin: boolean
+) => {
   const ch = await prisma.challenge.findUnique({ where: { id: challengeId } });
   if (!ch) throw error("Challenge not found", 404);
+  if (!actorIsAdmin && ch.createdById && ch.createdById !== actorId)
+    throw error("Forbidden", 403);
 
   const t = await prisma.task.create({
     data: { challengeId, ...body },
@@ -84,7 +91,14 @@ const addTask = async (challengeId: string, body: TaskCreateBody) => {
   return toTaskItem(t);
 };
 
-const removeTask = async (id: string) => {
+const removeTask = async (id: string, actorId: string, actorIsAdmin: boolean) => {
+  const task = await prisma.task.findUnique({
+    where: { id },
+    include: { challenge: { select: { createdById: true } } },
+  });
+  if (!task) throw error("Task not found", 404);
+  const ownerId = task.challenge?.createdById ?? null;
+  if (!actorIsAdmin && ownerId && ownerId !== actorId) throw error("Forbidden", 403);
   await prisma.task.delete({ where: { id } });
   return { ok: true as const };
 };

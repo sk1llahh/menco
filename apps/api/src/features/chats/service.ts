@@ -52,13 +52,25 @@ const postMessage = async (
   senderId: string,
   body: MessageCreateBody
 ) => {
+  const member = await prisma.chatMember.findUnique({
+    where: { chatId_userId: { chatId, userId: senderId } },
+  });
+  if (!member) throw error("Forbidden", 403);
   const msg = await prisma.message.create({
     data: { chatId, senderId, content: body.content, type: body.type },
   });
   return toMessageItem(msg);
 };
 
-const addMember = async (chatId: string, body: AddMemberBody) => {
+const addMember = async (
+  chatId: string,
+  actorId: string,
+  body: AddMemberBody
+) => {
+  const actor = await prisma.chatMember.findUnique({
+    where: { chatId_userId: { chatId, userId: actorId } },
+  });
+  if (!actor || actor.role !== "OWNER") throw error("Forbidden", 403);
   const cm = await prisma.chatMember.create({
     data: { chatId, userId: body.userId, role: body.role },
   });

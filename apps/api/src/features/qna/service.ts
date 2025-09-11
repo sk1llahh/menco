@@ -82,10 +82,12 @@ const update = async (id: string, userId: string, body: QnaUpdateBody) => {
   return toQnaQuestionItem(row);
 };
 
-const remove = async (id: string, userId: string) => {
+const remove = async (id: string, userId: string, isAdmin: boolean) => {
   const q = await prisma.qnaQuestion.findUnique({ where: { id } });
   if (!q) throw error("Question not found", 404);
-  if (q.authorId && q.authorId !== userId) throw error("Forbidden", 403);
+  if (!isAdmin) {
+    if (!q.authorId || q.authorId !== userId) throw error("Forbidden", 403);
+  }
 
   await prisma.qnaAnswer.deleteMany({ where: { questionId: id } });
   await prisma.qnaQuestion.delete({ where: { id } });

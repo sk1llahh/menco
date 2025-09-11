@@ -60,8 +60,9 @@ const update = eh(async (req: Request, res: Response) => {
 const remove = eh(async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.userId as string;
+    const isAdmin = Boolean((req as any).user?.isAdmin);
     const { id } = req.params as unknown as QnaIdParams;
-    const result = await svc.remove(id, userId);
+    const result = await svc.remove(id, userId, isAdmin);
     ok(res, result);
   } catch (e) {
     fail(res, e, (e as any).status || 400);

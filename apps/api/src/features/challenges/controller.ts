@@ -58,7 +58,9 @@ const addTask = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as ChallengeIdParams;
     const body = req.body as TaskCreateBody;
-    const result = await svc.addTask(id, body);
+    const actorId = (req as any).user.userId as string;
+    const actorIsAdmin = Boolean((req as any).user?.isAdmin);
+    const result = await svc.addTask(id, body, actorId, actorIsAdmin);
     ok(res, result, 201);
   } catch (e) {
     fail(res, e, (e as any).status || 400);
@@ -68,7 +70,9 @@ const addTask = eh(async (req: Request, res: Response) => {
 const removeTask = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as TaskIdParams;
-    const result = await svc.removeTask(id);
+    const actorId = (req as any).user.userId as string;
+    const actorIsAdmin = Boolean((req as any).user?.isAdmin);
+    const result = await svc.removeTask(id, actorId, actorIsAdmin);
     ok(res, result);
   } catch (e) {
     fail(res, e, (e as any).status || 400);

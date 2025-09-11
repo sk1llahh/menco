@@ -9,9 +9,17 @@ import type {
   PaymentUpdateStatusBody,
 } from "@repo/types";
 
-const list = async (q: PaymentListQuery): Promise<PageResult<PaymentItem>> => {
+const list = async (
+  q: PaymentListQuery,
+  actorId: string,
+  actorIsAdmin: boolean
+): Promise<PageResult<PaymentItem>> => {
   const where: any = {};
-  if (q.userId) where.userId = q.userId;
+  if (actorIsAdmin) {
+    if (q.userId) where.userId = q.userId;
+  } else {
+    where.userId = actorId;
+  }
   if (q.status) where.status = q.status;
   if (q.purpose) where.purpose = q.purpose;
 
@@ -30,14 +38,23 @@ const list = async (q: PaymentListQuery): Promise<PageResult<PaymentItem>> => {
   );
 };
 
-const get = async (id: string): Promise<PaymentItem> => {
+const get = async (
+  id: string,
+  actorId: string,
+  actorIsAdmin: boolean
+): Promise<PaymentItem> => {
   const row = await prisma.payment.findUnique({ where: { id } });
   if (!row) throw error("Payment not found", 404);
+  if (!actorIsAdmin && row.userId !== actorId) throw error("Forbidden", 403);
   return toPaymentItem(row);
 };
 
 const create = async (userId: string, body: PaymentCreateBody) => {
   if (!body.sessionId && !body.subscriptionId) {
+    throw error("Payment must reference sessionId or subscriptionId", 400);
+  }
+  if (body.sessionId && body.subscriptionId) {
+    throw error("Only one of sessionId or subscriptionId is allowed", 400);
   }
   const row = await prisma.payment.create({
     data: {
@@ -56,13 +73,13 @@ const create = async (userId: string, body: PaymentCreateBody) => {
 
 const updateStatus = async (
   id: string,
-  actorId: string,
+  _actorId: string,
   body: PaymentUpdateStatusBody,
   actorIsAdmin: boolean
 ) => {
   const exists = await prisma.payment.findUnique({ where: { id } });
   if (!exists) throw error("Payment not found", 404);
-  if (exists.userId !== actorId && !actorIsAdmin) throw error("Forbidden", 403);
+  if (!actorIsAdmin) throw error("Forbidden", 403);
 
   const row = await prisma.payment.update({
     where: { id },

@@ -12,8 +12,10 @@ import svc from "./service";
 
 const list = eh(async (req: Request, res: Response) => {
   try {
+    const actorId = (req as any).user.userId as string;
+    const actorIsAdmin = Boolean((req as any).user?.isAdmin);
     const query = req.query as unknown as PaymentListQuery;
-    const result = await svc.list(query);
+    const result = await svc.list(query, actorId, actorIsAdmin);
     ok(res, result);
   } catch (e) {
     fail(res, e);
@@ -23,7 +25,9 @@ const list = eh(async (req: Request, res: Response) => {
 const get = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as PaymentIdParams;
-    const result = await svc.get(id);
+    const actorId = (req as any).user.userId as string;
+    const actorIsAdmin = Boolean((req as any).user?.isAdmin);
+    const result = await svc.get(id, actorId, actorIsAdmin);
     ok(res, result);
   } catch (e) {
     fail(res, e);
