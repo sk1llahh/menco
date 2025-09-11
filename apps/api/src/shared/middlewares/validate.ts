@@ -1,5 +1,5 @@
-import type { Request, Response, NextFunction } from "express";
-import type { z, ZodError } from "zod";
+import type { NextFunction, Request, Response } from "express";
+import type { ZodError, z } from "zod";
 import { fail } from "@/shared/utils/response";
 
 type Schemas = {

@@ -1,4 +1,4 @@
-import { Router, type Router as ExpressRouter } from "express";
+import { type Router as ExpressRouter, Router } from "express";
 import authRoutes from "./auth/route";
 import challengeRoutes from "./challenges/route";
 import chatRoutes from "./chats/route";

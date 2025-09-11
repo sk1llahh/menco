@@ -1,5 +1,5 @@
-import { createServer } from "./app/server";
 import { CONFIG } from "@repo/config";
+import { createServer } from "./app/server";
 
 export function start() {
   const app = createServer();

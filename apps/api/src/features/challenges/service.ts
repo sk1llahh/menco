@@ -1,4 +1,10 @@
-import type { PageResult } from "@repo/types";
+import type {
+  ChallengeCreateBody,
+  ChallengeListQuery,
+  PageResult,
+  TaskCreateBody,
+  TaskListQuery,
+} from "@repo/types";
 import prisma from "@/prisma";
 import { error } from "@/shared/utils/errors";
 import { paginate } from "@/shared/utils/pagination";
@@ -8,12 +14,6 @@ import {
   toChallengeCard,
   toTaskItem,
 } from "./mapper";
-import type {
-  ChallengeCreateBody,
-  ChallengeListQuery,
-  TaskCreateBody,
-  TaskListQuery,
-} from "@repo/types";
 
 const list = async (
   q: ChallengeListQuery
@@ -91,14 +91,19 @@ const addTask = async (
   return toTaskItem(t);
 };
 
-const removeTask = async (id: string, actorId: string, actorIsAdmin: boolean) => {
+const removeTask = async (
+  id: string,
+  actorId: string,
+  actorIsAdmin: boolean
+) => {
   const task = await prisma.task.findUnique({
     where: { id },
     include: { challenge: { select: { createdById: true } } },
   });
   if (!task) throw error("Task not found", 404);
   const ownerId = task.challenge?.createdById ?? null;
-  if (!actorIsAdmin && ownerId && ownerId !== actorId) throw error("Forbidden", 403);
+  if (!actorIsAdmin && ownerId && ownerId !== actorId)
+    throw error("Forbidden", 403);
   await prisma.task.delete({ where: { id } });
   return { ok: true as const };
 };

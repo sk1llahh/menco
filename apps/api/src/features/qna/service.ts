@@ -1,21 +1,21 @@
-import type { PageResult } from "@repo/types";
-import prisma from "@/prisma";
-import { error } from "@/shared/utils/errors";
-import { paginate } from "@/shared/utils/pagination";
-import {
-  type QnaQuestionItem,
-  type QnaAnswerItem,
-  toQnaQuestionItem,
-  toQnaAnswerItem,
-} from "./mapper";
 import type {
   AnswerCreateBody,
   AnswerListQuery,
   AnswerUpdateBody,
+  PageResult,
   QnaCreateBody,
   QnaListQuery,
   QnaUpdateBody,
 } from "@repo/types";
+import prisma from "@/prisma";
+import { error } from "@/shared/utils/errors";
+import { paginate } from "@/shared/utils/pagination";
+import {
+  type QnaAnswerItem,
+  type QnaQuestionItem,
+  toQnaAnswerItem,
+  toQnaQuestionItem,
+} from "./mapper";
 
 const list = async (q: QnaListQuery): Promise<PageResult<QnaQuestionItem>> => {
   const where: any = {};

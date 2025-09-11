@@ -1,14 +1,14 @@
-import type { Router as ExpressRouter } from "express";
-import { Router } from "express";
-import { authGuard, requireAdmin } from "@/shared/middlewares/auth";
-import { validate } from "@/shared/middlewares/validate";
-import c from "./controller";
 import {
   PlanCreateSchema,
   PlanIdParamsSchema,
   PlanListQuerySchema,
   PlanUpdateSchema,
 } from "@repo/types";
+import type { Router as ExpressRouter } from "express";
+import { Router } from "express";
+import { authGuard, requireAdmin } from "@/shared/middlewares/auth";
+import { validate } from "@/shared/middlewares/validate";
+import c from "./controller";
 
 const r: ExpressRouter = Router();
 
@@ -22,6 +22,11 @@ r.patch(
   validate({ params: PlanIdParamsSchema, body: PlanUpdateSchema }),
   c.update
 );
-r.delete("/:id", requireAdmin, validate({ params: PlanIdParamsSchema }), c.remove);
+r.delete(
+  "/:id",
+  requireAdmin,
+  validate({ params: PlanIdParamsSchema }),
+  c.remove
+);
 
 export default r as import("express").Router;

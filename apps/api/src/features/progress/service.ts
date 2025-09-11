@@ -1,9 +1,12 @@
-import type { PageResult } from "@repo/types";
+import type {
+  PageResult,
+  ProgressListQuery,
+  ProgressUpdateBody,
+} from "@repo/types";
 import prisma from "@/prisma";
 import { error } from "@/shared/utils/errors";
 import { paginate } from "@/shared/utils/pagination";
 import { type ProgressItem, toProgressItem } from "./mapper";
-import type { ProgressListQuery, ProgressUpdateBody } from "@repo/types";
 
 const list = async (
   q: ProgressListQuery

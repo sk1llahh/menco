@@ -5,7 +5,7 @@ export const PaymentListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
   userId: z.string().optional(),
   status: z.enum(["PENDING", "SUCCEEDED", "FAILED", "REFUNDED"]).optional(),
-  purpose: z.string().optional(), 
+  purpose: z.string().optional(),
 });
 
 export const PaymentIdParamsSchema = z.object({ id: z.string().min(1) });

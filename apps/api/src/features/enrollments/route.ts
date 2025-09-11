@@ -1,13 +1,13 @@
-import type { Router as ExpressRouter } from "express";
-import { Router } from "express";
-import { authGuard } from "@/shared/middlewares/auth";
-import { validate } from "@/shared/middlewares/validate";
-import c from "./controller";
 import {
   EnrollmentCreateSchema,
   EnrollmentIdParamsSchema,
   EnrollmentListQuerySchema,
 } from "@repo/types";
+import type { Router as ExpressRouter } from "express";
+import { Router } from "express";
+import { authGuard } from "@/shared/middlewares/auth";
+import { validate } from "@/shared/middlewares/validate";
+import c from "./controller";
 
 const r: ExpressRouter = Router();
 r.get("/", authGuard, validate({ query: EnrollmentListQuerySchema }), c.list);

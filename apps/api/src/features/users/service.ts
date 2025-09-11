@@ -1,9 +1,13 @@
-import type { PageResult, UserItem } from "@repo/types";
+import type {
+  PageResult,
+  UserItem,
+  UsersListQuery,
+  UserUpdateBody,
+} from "@repo/types";
 import prisma from "@/prisma";
 import { error } from "@/shared/utils/errors";
 import { paginate } from "@/shared/utils/pagination";
 import { toUserItem } from "./mapper";
-import type { UsersListQuery, UserUpdateBody } from "@repo/types";
 
 const list = async (q: UsersListQuery): Promise<PageResult<UserItem>> => {
   const where: any = {};

@@ -1,13 +1,13 @@
+import type {
+  AddMemberBody,
+  ChatCreateBody,
+  ChatListQuery,
+  MessageCreateBody,
+} from "@repo/types";
 import prisma from "@/prisma";
 import { error } from "@/shared/utils/errors";
 import { paginate } from "@/shared/utils/pagination";
-import { toChatItem, toMessageItem, toChatMemberItem } from "./mapper";
-import type {
-  ChatListQuery,
-  ChatCreateBody,
-  MessageCreateBody,
-  AddMemberBody,
-} from "@repo/types";
+import { toChatItem, toChatMemberItem, toMessageItem } from "./mapper";
 
 const list = async (userId: string, q: ChatListQuery) =>
   paginate(

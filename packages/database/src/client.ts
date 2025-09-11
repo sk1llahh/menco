@@ -3,11 +3,11 @@ if (!process.env.DATABASE_URL) {
   const hint = process.env.__ENV_FILE
     ? `Loaded env file: ${process.env.__ENV_FILE}`
     : "No env file detected. Set DOTENV_CONFIG_PATH or create env.development / env.production in repo root.";
-  throw new Error(
-    `DATABASE_URL is not set. ${hint}`
-  );
+  throw new Error(`DATABASE_URL is not set. ${hint}`);
 }
+
 export * from "../generated/client";
+
 import { PrismaClient } from "../generated/client";
 
 const prismaClientSingleton = () => new PrismaClient();

@@ -1,9 +1,9 @@
+import { LoginSchema, RefreshSchema, RegisterSchema } from "@repo/types";
 import type { Router as ExpressRouter } from "express";
 import { Router } from "express";
 import { authGuard } from "@/shared/middlewares/auth";
 import { validate } from "@/shared/middlewares/validate";
 import c from "./controller";
-import { LoginSchema, RefreshSchema, RegisterSchema } from "@repo/types";
 
 const r: ExpressRouter = Router();
 r.post("/register", validate({ body: RegisterSchema }), c.register);

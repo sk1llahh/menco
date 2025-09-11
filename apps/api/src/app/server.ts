@@ -1,12 +1,12 @@
+import cors from "cors";
 import type { Express } from "express";
 import express from "express";
-import cors from "cors";
+import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import morgan from "morgan";
-import rateLimit from "express-rate-limit";
-import { notFound, errorHandler } from "@/shared/middlewares/error";
-import { CONFIG } from "@/shared/utils/config";
 import apiRoutes from "@/features";
+import { errorHandler, notFound } from "@/shared/middlewares/error";
+import { CONFIG } from "@/shared/utils/config";
 
 export function createServer(): Express {
   const app = express();
@@ -47,7 +47,10 @@ export function createServer(): Express {
   app.use("/api/auth", authLimiter);
 
   app.get("/api/health", (_req, res) => {
-    res.json({ success: true, data: { ok: true, ts: new Date().toISOString() } });
+    res.json({
+      success: true,
+      data: { ok: true, ts: new Date().toISOString() },
+    });
   });
 
   app.use("/api", apiRoutes);

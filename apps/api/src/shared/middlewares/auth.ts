@@ -1,9 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
-import { verifyAccessToken } from "@/shared/utils/jwt";
 import { CONFIG } from "@/shared/utils/config";
+import { verifyAccessToken } from "@/shared/utils/jwt";
 
 export function authGuard(
-  req: Request & { user?: { userId: string; login: string; isAdmin?: boolean } },
+  req: Request & {
+    user?: { userId: string; login: string; isAdmin?: boolean };
+  },
   res: Response,
   next: NextFunction
 ) {
@@ -25,7 +27,9 @@ export function authGuard(
 }
 
 export function requireAdmin(
-  req: Request & { user?: { userId: string; login: string; isAdmin?: boolean } },
+  req: Request & {
+    user?: { userId: string; login: string; isAdmin?: boolean };
+  },
   res: Response,
   next: NextFunction
 ) {

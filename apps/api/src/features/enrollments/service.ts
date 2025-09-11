@@ -1,9 +1,12 @@
-import type { PageResult } from "@repo/types";
+import type {
+  EnrollmentCreateBody,
+  EnrollmentListQuery,
+  PageResult,
+} from "@repo/types";
 import prisma from "@/prisma";
 import { error } from "@/shared/utils/errors";
 import { paginate } from "@/shared/utils/pagination";
 import { type EnrollmentItem, toEnrollmentItem } from "./mapper";
-import type { EnrollmentCreateBody, EnrollmentListQuery } from "@repo/types";
 
 const list = async (
   q: EnrollmentListQuery

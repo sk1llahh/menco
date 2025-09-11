@@ -1,8 +1,7 @@
-import type { PageResult } from "@repo/types";
+import type { PageResult, SkillCreateBody, SkillListQuery } from "@repo/types";
 import prisma from "@/prisma";
 import { error } from "@/shared/utils/errors";
 import { paginate } from "@/shared/utils/pagination";
-import type { SkillCreateBody, SkillListQuery } from "@repo/types";
 
 type SkillItem = { id: string; name: string; slug: string };
 

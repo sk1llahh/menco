@@ -1,8 +1,7 @@
-import type { PageResult } from "@repo/types";
+import type { NotificationListQuery, PageResult } from "@repo/types";
 import prisma from "@/prisma";
 import { paginate } from "@/shared/utils/pagination";
 import { type NotificationItem, toNotificationItem } from "./mapper";
-import type { NotificationListQuery } from "@repo/types";
 
 const list = async (
   userId: string,

@@ -1,8 +1,3 @@
-import type { Router as ExpressRouter } from "express";
-import { Router } from "express";
-import { authGuard } from "@/shared/middlewares/auth";
-import { validate } from "@/shared/middlewares/validate";
-import c from "./controller";
 import {
   ReviewCreateSchema,
   SessionCreateSchema,
@@ -10,6 +5,11 @@ import {
   SessionListQuerySchema,
   SessionUpdateStatusSchema,
 } from "@repo/types";
+import type { Router as ExpressRouter } from "express";
+import { Router } from "express";
+import { authGuard } from "@/shared/middlewares/auth";
+import { validate } from "@/shared/middlewares/validate";
+import c from "./controller";
 
 const r: ExpressRouter = Router();
 

@@ -1,7 +1,7 @@
-import { config as loadEnv } from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { config as loadEnv } from "dotenv";
 import { z } from "zod";
 
 function findRepoRoot(start: string): string | undefined {
@@ -58,7 +58,9 @@ const csv = (v?: string | null): string[] =>
     .filter(Boolean);
 
 const RawEnv = z.object({
-  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
   BACKEND_PORT: z.coerce.number().int().positive().default(4000),
   JWT_SECRET: z.string().optional(),
   ACCESS_TTL: z.string().min(1).default("15m"),

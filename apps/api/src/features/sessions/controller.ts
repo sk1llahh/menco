@@ -1,7 +1,3 @@
-import type { Request, Response } from "express";
-import type { RequestHandler } from "express";
-import eh from "express-async-handler";
-import { ok, fail } from "@/shared/utils/response";
 import type {
   ReviewCreateBody,
   SessionCreateBody,
@@ -9,6 +5,9 @@ import type {
   SessionListQuery,
   SessionUpdateStatusBody,
 } from "@repo/types";
+import type { Request, RequestHandler, Response } from "express";
+import eh from "express-async-handler";
+import { fail, ok } from "@/shared/utils/response";
 import svc from "./service";
 
 const list = eh(async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
-import type { Response } from "express";
 import type { ApiResponse } from "@repo/types";
+import type { Response } from "express";
 
 export function ok<T>(res: Response, data: T, status = 200): void {
   if (res.headersSent) return;

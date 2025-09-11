@@ -3,7 +3,7 @@ import { z } from "zod";
 export const MentorSearchQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  q: z.string().optional(), 
+  q: z.string().optional(),
   minRating: z.coerce.number().min(0).max(5).optional(),
   maxRate: z.coerce.number().positive().optional(),
   skill: z.string().optional(),

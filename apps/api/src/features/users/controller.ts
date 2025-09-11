@@ -1,8 +1,7 @@
-import type { Request, Response } from "express";
-import type { RequestHandler } from "express";
+import type { UserIdParams, UsersListQuery, UserUpdateBody } from "@repo/types";
+import type { Request, RequestHandler, Response } from "express";
 import eh from "express-async-handler";
-import { ok, fail } from "@/shared/utils/response";
-import type { UserIdParams, UserUpdateBody, UsersListQuery } from "@repo/types";
+import { fail, ok } from "@/shared/utils/response";
 import svc from "./service";
 
 const list = eh(async (req: Request, res: Response) => {

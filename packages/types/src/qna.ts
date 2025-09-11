@@ -3,9 +3,9 @@ import { z } from "zod";
 export const QnaListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  q: z.string().optional(), 
-  targetUserId: z.string().optional(), 
-  challengeId: z.string().optional(), 
+  q: z.string().optional(),
+  targetUserId: z.string().optional(),
+  challengeId: z.string().optional(),
   authorId: z.string().optional(),
   onlyAnonymous: z.enum(["true", "false"]).optional(),
 });
