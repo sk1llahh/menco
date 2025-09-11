@@ -11,8 +11,6 @@
     "format": "biome format --write",
     "lint": "biome lint --write",
     "check": "biome check --write",
-    "check-types": "turbo run check-types",
-    "fun": "turbo run check check-types",
     "build": "turbo run build",
     "start": "turbo run start",
     "dev": "turbo run dev",
