@@ -68,7 +68,6 @@ const remove = eh(async (req: Request, res: Response) => {
   }
 });
 
-// answers
 const answers = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as QnaIdParams;

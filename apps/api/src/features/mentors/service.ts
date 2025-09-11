@@ -13,7 +13,6 @@ import type {
   MentorUpdateBody,
 } from "@repo/types";
 
-// search mentor cards
 const search = async (
   q: MentorSearchQuery
 ): Promise<PageResult<MentorCard>> => {
@@ -22,7 +21,6 @@ const search = async (
   if (q.maxRate) where.ratePerHour = { lte: q.maxRate as any };
   if (q.skill) where.skills = { some: { skill: { slug: q.skill } } };
 
-  // q по имени/тайтлу/about/скиллам
   const or: any[] = [];
   if (q.q) {
     or.push({ title: { contains: q.q, mode: "insensitive" } });
@@ -55,7 +53,6 @@ const search = async (
   );
 };
 
-// update my mentor profile (upsert)
 const upsertMe = async (userId: string, body: MentorUpdateBody) => {
   const data: any = body;
   const mp = await prisma.mentorProfile.upsert({
@@ -70,7 +67,6 @@ const upsertMe = async (userId: string, body: MentorUpdateBody) => {
   return toMentorCard(mp);
 };
 
-// availability
 const availabilityList = async (userId: string, q: AvailabilityListQuery) => {
   const where = { mentorProfile: { userId } };
   return paginate(
@@ -116,7 +112,6 @@ const availabilityDelete = async (
   return { ok: true as const };
 };
 
-// applications
 const apply = async (userId: string, body: ApplicationCreateBody) => {
   const exists = await prisma.mentorApplication.findFirst({
     where: { userId, status: "PENDING" },
@@ -128,7 +123,6 @@ const apply = async (userId: string, body: ApplicationCreateBody) => {
   });
 };
 
-// (для админ-панели) — обновить статус заявки
 const setApplicationStatus = async (
   appId: string,
   body: ApplicationUpdateBody

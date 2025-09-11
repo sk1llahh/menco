@@ -38,7 +38,6 @@ const get = async (id: string): Promise<PaymentItem> => {
 
 const create = async (userId: string, body: PaymentCreateBody) => {
   if (!body.sessionId && !body.subscriptionId) {
-    // можно платить и просто за что-то иное, но лучше связать
   }
   const row = await prisma.payment.create({
     data: {
@@ -55,9 +54,15 @@ const create = async (userId: string, body: PaymentCreateBody) => {
   return toPaymentItem(row);
 };
 
-const updateStatus = async (id: string, body: PaymentUpdateStatusBody) => {
+const updateStatus = async (
+  id: string,
+  actorId: string,
+  body: PaymentUpdateStatusBody,
+  actorIsAdmin: boolean
+) => {
   const exists = await prisma.payment.findUnique({ where: { id } });
   if (!exists) throw error("Payment not found", 404);
+  if (exists.userId !== actorId && !actorIsAdmin) throw error("Forbidden", 403);
 
   const row = await prisma.payment.update({
     where: { id },

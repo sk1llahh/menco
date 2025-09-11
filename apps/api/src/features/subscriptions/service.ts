@@ -43,7 +43,6 @@ const create = async (userId: string, body: SubscriptionCreateBody) => {
   const plan = await prisma.plan.findUnique({ where: { id: body.planId } });
   if (!plan) throw error("Plan not found", 404);
 
-  // если у юзера есть активная подписка на этот план — 409
   const active = await prisma.subscription.findFirst({
     where: { userId, planId: body.planId, isActive: true },
   });
@@ -63,7 +62,6 @@ const create = async (userId: string, body: SubscriptionCreateBody) => {
     },
   });
 
-  // создаём PENDING платеж (опционально, как запись)
   await prisma.payment.create({
     data: {
       userId,

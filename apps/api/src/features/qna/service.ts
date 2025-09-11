@@ -17,7 +17,6 @@ import type {
   QnaUpdateBody,
 } from "@repo/types";
 
-// QUESTIONS
 const list = async (q: QnaListQuery): Promise<PageResult<QnaQuestionItem>> => {
   const where: any = {};
   const or: any[] = [];
@@ -68,7 +67,6 @@ const create = async (userId: string, body: QnaCreateBody) => {
 const update = async (id: string, userId: string, body: QnaUpdateBody) => {
   const q = await prisma.qnaQuestion.findUnique({ where: { id } });
   if (!q) throw error("Question not found", 404);
-  // редактировать может только автор (если не аноним, и это он)
   if (q.authorId && q.authorId !== userId) throw error("Forbidden", 403);
 
   const row = await prisma.qnaQuestion.update({
@@ -94,7 +92,6 @@ const remove = async (id: string, userId: string) => {
   return { ok: true as const };
 };
 
-// ANSWERS
 const answers = async (
   questionId: string,
   q: AnswerListQuery

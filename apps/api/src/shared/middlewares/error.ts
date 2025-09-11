@@ -11,5 +11,6 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ): void {
-  fail(res, err, 500);
+  const status = typeof err?.status === "number" ? err.status : 500;
+  fail(res, err, status);
 }

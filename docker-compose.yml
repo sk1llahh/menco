@@ -19,6 +19,8 @@ services:
     restart: always
     env_file:
       - ./packages/config/.env
+    environment:
+      - BACKEND_PORT=3001
     ports:
       - 3001:3001
     networks:

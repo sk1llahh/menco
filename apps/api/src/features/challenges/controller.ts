@@ -43,7 +43,6 @@ const get = eh(async (req: Request, res: Response) => {
   }
 });
 
-// tasks
 const tasks = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as ChallengeIdParams;

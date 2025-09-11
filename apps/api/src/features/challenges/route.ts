@@ -18,7 +18,6 @@ r.get("/", validate({ query: ChallengeListQuerySchema }), c.list);
 r.post("/", authGuard, validate({ body: ChallengeCreateSchema }), c.create);
 r.get("/:id", validate({ params: ChallengeIdParamsSchema }), c.get);
 
-// tasks
 r.get(
   "/:id/tasks",
   validate({ params: ChallengeIdParamsSchema, query: TaskListQuerySchema }),

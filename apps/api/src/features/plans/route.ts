@@ -15,7 +15,6 @@ const r: ExpressRouter = Router();
 r.get("/", validate({ query: PlanListQuerySchema }), c.list);
 r.get("/:id", validate({ params: PlanIdParamsSchema }), c.get);
 
-// для простоты защищаем мутации authGuard (можно заменить на adminGuard)
 r.post("/", authGuard, validate({ body: PlanCreateSchema }), c.create);
 r.patch(
   "/:id",

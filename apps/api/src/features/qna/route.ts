@@ -28,7 +28,6 @@ r.patch(
 );
 r.delete("/:id", authGuard, validate({ params: QnaIdParamsSchema }), c.remove);
 
-// answers
 r.get(
   "/:id/answers",
   validate({ params: QnaIdParamsSchema, query: AnswerListQuerySchema }),

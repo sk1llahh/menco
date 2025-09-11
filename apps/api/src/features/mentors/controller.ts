@@ -78,7 +78,6 @@ const apply = eh(async (req: Request, res: Response) => {
   }
 });
 
-// админ
 const setApplicationStatus = eh(async (req: Request, res: Response) => {
   try {
     const appId = req.params?.id as string;

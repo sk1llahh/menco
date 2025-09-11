@@ -15,7 +15,6 @@ import type {
   SessionUpdateStatusBody,
 } from "@repo/types";
 
-// LIST
 const list = async (q: SessionListQuery): Promise<PageResult<SessionItem>> => {
   const where: any = {};
   if (q.mentorId) where.mentorId = q.mentorId;
@@ -42,7 +41,6 @@ const list = async (q: SessionListQuery): Promise<PageResult<SessionItem>> => {
   );
 };
 
-// CREATE (student -> mentor)
 const create = async (studentId: string, body: SessionCreateBody) => {
   if (body.mentorId === studentId) throw error("You cannot book yourself", 400);
   const s = await prisma.mentorSession.create({
@@ -61,7 +59,6 @@ const create = async (studentId: string, body: SessionCreateBody) => {
   return toSessionItem(s);
 };
 
-// UPDATE STATUS (mentor only or student cancel)
 const updateStatus = async (
   id: string,
   actorId: string,
@@ -70,8 +67,6 @@ const updateStatus = async (
   const s = await prisma.mentorSession.findUnique({ where: { id } });
   if (!s) throw error("Session not found", 404);
 
-  // базовые правила (упростим):
-  // CONFIRM/CANCEL может ментор; COMPLETED/NO_SHOW — после даты; CANCELED — любой участник
   const isMentor = s.mentorId === actorId;
   const isStudent = s.studentId === actorId;
 
@@ -96,7 +91,6 @@ const updateStatus = async (
   return toSessionItem(upd);
 };
 
-// REVIEWS (student leaves one per session)
 const addReview = async (
   sessionId: string,
   authorId: string,
@@ -116,7 +110,6 @@ const addReview = async (
     data: { sessionId, authorId, rating: body.rating, comment: body.comment },
   });
 
-  // апдейт агрегатов у ментора (упрощенно)
   const reviews = await prisma.sessionReview.findMany({
     where: { session: { mentorId: s.mentorId } },
     select: { rating: true },

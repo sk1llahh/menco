@@ -11,7 +11,7 @@ build
 .react-router
 
 # Environment & local files
-# .env*
+.env*
 !.env.example
 .DS_Store
 *.pem

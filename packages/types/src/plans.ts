@@ -5,7 +5,7 @@ export const PlanListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
   currency: z.enum(["KZT", "USD", "EUR", "RUB"]).optional(),
   interval: z.enum(["MONTH", "YEAR"]).optional(),
-  q: z.string().optional(), // поиск по name
+  q: z.string().optional(),
 });
 
 export const PlanIdParamsSchema = z.object({ id: z.string().min(1) });

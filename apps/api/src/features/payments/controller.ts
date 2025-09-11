@@ -44,8 +44,10 @@ const create = eh(async (req: Request, res: Response) => {
 const updateStatus = eh(async (req: Request, res: Response) => {
   try {
     const { id } = req.params as unknown as PaymentIdParams;
+    const actorId = (req as any).user.userId as string;
+    const actorIsAdmin = Boolean((req as any).user?.isAdmin);
     const body = req.body as PaymentUpdateStatusBody;
-    const result = await svc.updateStatus(id, body);
+    const result = await svc.updateStatus(id, actorId, body, actorIsAdmin);
     ok(res, result);
   } catch (e) {
     fail(res, e);

@@ -23,7 +23,6 @@ export type UsersListQuery = z.output<typeof UsersListQuerySchema>;
 export type UserIdParams = z.output<typeof UserIdParamsSchema>;
 export type UserUpdateBody = z.output<typeof UserUpdateSchema>;
 
-// Shared shape for user items (as exposed by API)
 export type UserItem = {
   id: string;
   login: string;

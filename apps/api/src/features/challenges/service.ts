@@ -55,7 +55,6 @@ const get = async (id: string) => {
   return toChallengeCard(ch);
 };
 
-// tasks
 const tasks = async (
   challengeId: string,
   q: TaskListQuery

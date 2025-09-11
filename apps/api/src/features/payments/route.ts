@@ -15,7 +15,7 @@ const r: ExpressRouter = Router();
 r.get("/", authGuard, validate({ query: PaymentListQuerySchema }), c.list);
 r.get("/:id", authGuard, validate({ params: PaymentIdParamsSchema }), c.get);
 r.post("/", authGuard, validate({ body: PaymentCreateSchema }), c.create);
-// если нужен вебхук — выносится в отдельный публичный роут без authGuard
+
 r.patch(
   "/:id/status",
   authGuard,

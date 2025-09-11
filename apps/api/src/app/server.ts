@@ -2,6 +2,8 @@ import type { Express } from "express";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 import { notFound, errorHandler } from "@/shared/middlewares/error";
 import { CONFIG } from "@/shared/utils/config";
 import apiRoutes from "@/features";
@@ -29,9 +31,24 @@ export function createServer(): Express {
   );
 
   app.use(helmet());
+  if (CONFIG.NODE_ENV !== "production") {
+    app.use(morgan("dev"));
+  }
 
   app.use(express.json({ limit: "2mb" }));
   app.use(express.urlencoded({ extended: false, limit: "2mb" }));
+
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+  app.use("/api/auth", authLimiter);
+
+  app.get("/api/health", (_req, res) => {
+    res.json({ success: true, data: { ok: true, ts: new Date().toISOString() } });
+  });
 
   app.use("/api", apiRoutes);
 

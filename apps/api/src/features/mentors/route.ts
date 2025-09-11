@@ -1,6 +1,6 @@
 import type { Router as ExpressRouter } from "express";
 import { Router } from "express";
-import { authGuard } from "@/shared/middlewares/auth";
+import { authGuard, requireAdmin } from "@/shared/middlewares/auth";
 import { validate } from "@/shared/middlewares/validate";
 import c from "./controller";
 import {
@@ -18,7 +18,6 @@ const r: ExpressRouter = Router();
 r.get("/", validate({ query: MentorSearchQuerySchema }), c.search);
 r.put("/me", authGuard, validate({ body: MentorUpdateSchema }), c.upsertMe);
 
-// availability
 r.get(
   "/me/availability",
   authGuard,
@@ -38,7 +37,6 @@ r.delete(
   c.availabilityDelete
 );
 
-// applications
 r.post(
   "/applications",
   authGuard,
@@ -46,9 +44,9 @@ r.post(
   c.apply
 );
 
-// admin (по желанию подвяжи отдельный guard/роль)
 r.patch(
   "/applications/:id",
+  requireAdmin,
   validate({ body: ApplicationUpdateSchema }),
   c.setApplicationStatus
 );
