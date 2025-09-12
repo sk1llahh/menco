@@ -15,3 +15,4 @@ export * from "./sessions";
 export * from "./skills";
 export * from "./subscriptions";
 export * from "./users";
+export * from "./jwt";
