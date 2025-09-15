@@ -1,6 +1,7 @@
 import { Atom } from 'lucide-react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { ROUTES } from '@/shared/model/routes';
+import { LogoutButton } from '@/features/auth/logout-button';
 
 export const LayoutSidebar = (): React.ReactNode => {
   const location = useLocation();
@@ -112,6 +113,9 @@ export const LayoutSidebar = (): React.ReactNode => {
                 </div>
               </div>
             ))}
+          <div className="mt-auto pt-4">
+            <LogoutButton className="btn-error w-full" />
+          </div>
         </nav>
       </aside>
 

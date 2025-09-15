@@ -1,13 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import {LoginSchema, LoginBody} from '@repo/types'
+import { LoginSchema, LoginBody } from '@repo/types';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import manWorkingImg1 from '@/shared/assets/images/man_working_1.png';
 import { ROUTES } from '@/shared/model/routes';
 import useAuth from '@/entities/auth/model/useAuth';
+import { Input } from '@/shared/ui';
 
 const Page = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation() as any;
+  const from = location.state?.from?.pathname || ROUTES.HOME;
   const {
     register,
     handleSubmit,
@@ -16,8 +20,12 @@ const Page = () => {
     resolver: zodResolver(LoginSchema),
   });
 
-  const onSubmit = (data: LoginBody) => {
-    login.mutate(data);
+  const onSubmit = async (data: LoginBody) => {
+    try {
+      await login.mutateAsync(data);
+      navigate(from);
+    } catch (e) {
+    }
   };
 
   return (
@@ -37,18 +45,31 @@ const Page = () => {
             Welcome Back!!
           </h1>
 
-          <form
-            className="flex flex-col gap-6"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <input
-              className="input w-100"
-              {...register('login')}
-            />
-            <input
-              className="input w-100"
-              {...register('password')}
-            />
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-1">
+              <Input
+                {...register('login')}
+                placeholder="login"
+                autoComplete="username"
+                disabled={login.isPending}
+              />
+              {errors.login && (
+                <span className="text-error text-sm">{errors.login.message as string}</span>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <Input
+                {...register('password')}
+                type="password"
+                placeholder="password"
+                autoComplete="current-password"
+                disabled={login.isPending}
+              />
+              {errors.password && (
+                <span className="text-error text-sm">{errors.password.message as string}</span>
+              )}
+            </div>
 
             <a
               href="#"
@@ -59,15 +80,19 @@ const Page = () => {
 
             <button
               type="submit"
+              disabled={login.isPending}
               className="
                 w-full py-3 mt-4 rounded-xl
                 bg-orange-200 text-orange-900 font-semibold
                 hover:bg-orange-300 transition-colors duration-200
-                shadow-md
+                shadow-md disabled:opacity-60 disabled:cursor-not-allowed
               "
             >
-              Login
+              {login.isPending ? 'Signing in...' : 'Login'}
             </button>
+            {login.isError && (
+              <p className="text-error text-sm">Invalid credentials or server error</p>
+            )}
           </form>
 
           <div className="flex items-center my-8">

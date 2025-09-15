@@ -1,13 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import manWorkingImg2 from '@/shared/assets/images/man_working_2.png';
 import { ROUTES } from '@/shared/model/routes';
 import { RegisterBody, RegisterSchema } from '@repo/types';
 import useAuth from '@/entities/auth/model/useAuth';
+import { Input } from '@/shared/ui';
 
 const Page = () => {
-  const { register: handleHegister } = useAuth();
+  const { register: handleRegister } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -17,8 +19,11 @@ const Page = () => {
     resolver: zodResolver(RegisterSchema),
   });
 
-  const onSubmit = (data: RegisterBody) => {
-    handleHegister.mutate(data);
+  const onSubmit = async (data: RegisterBody) => {
+    try {
+      await handleRegister.mutateAsync(data);
+      navigate(ROUTES.HOME);
+    } catch (e) {}
   };
 
   return (
@@ -54,41 +59,61 @@ const Page = () => {
             Create Account
           </h1>
 
-          <form
-            className="flex flex-col gap-6"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <input
-              className="input"
-              {...register('login')}
-              type="text"
-              placeholder="login"
-            />
-            <input
-              className="input"
-              {...register('email')}
-              type="text"
-              placeholder="email"
-            />
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-1">
+              <Input
+                {...register('login')}
+                type="text"
+                placeholder="login"
+                autoComplete="username"
+                disabled={handleRegister.isPending}
+              />
+              {errors.login && (
+                <span className="text-error text-sm">{errors.login.message as string}</span>
+              )}
+            </div>
 
-            <input
-              className="input"
-              {...register('password')}
-              type="password"
-              placeholder="password"
-            />
+            <div className="flex flex-col gap-1">
+              <Input
+                {...register('email')}
+                type="email"
+                placeholder="email"
+                autoComplete="email"
+                disabled={handleRegister.isPending}
+              />
+              {errors.email && (
+                <span className="text-error text-sm">{errors.email.message as string}</span>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <Input
+                {...register('password')}
+                type="password"
+                placeholder="password"
+                autoComplete="new-password"
+                disabled={handleRegister.isPending}
+              />
+              {errors.password && (
+                <span className="text-error text-sm">{errors.password.message as string}</span>
+              )}
+            </div>
 
             <button
               type="submit"
+              disabled={handleRegister.isPending}
               className="
                 w-full py-3 mt-4 rounded-xl
                 bg-orange-200 text-orange-900 font-semibold
                 hover:bg-orange-300 transition-colors duration-200
-                shadow-md
+                shadow-md disabled:opacity-60 disabled:cursor-not-allowed
               "
             >
-              Create Account
+              {handleRegister.isPending ? 'Creating...' : 'Create Account'}
             </button>
+            {handleRegister.isError && (
+              <p className="text-error text-sm">Registration failed. Try different credentials.</p>
+            )}
           </form>
 
           <div className="flex items-center my-8">

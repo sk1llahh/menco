@@ -44,10 +44,6 @@ const protectedRoutes = [
             lazy: () => import('@/pages/schedule/schedule.page'),
           },
           {
-            path: ROUTES.SCHEDULE,
-            lazy: () => import('@/pages/schedule/schedule.page'),
-          },
-          {
             path: ROUTES.ADMIN,
             lazy: () => import('@/pages/admin/admin.page'),
           },

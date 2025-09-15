@@ -1,11 +1,11 @@
 const rawApiUrl = (import.meta.env.VITE_API_URL ?? '').toString().trim();
 const hasApiUrl = rawApiUrl && rawApiUrl !== 'undefined' && rawApiUrl !== 'null';
 
-// Fallback to current origin in development if VITE_API_URL is not provided
-const baseOrigin = hasApiUrl ? rawApiUrl : (typeof window !== 'undefined' ? window.location.origin : '');
-
-// Ensure no trailing slash on base and correct '/api' join
-const API_BASE_URL = (baseOrigin ? new URL('/api', baseOrigin).toString() : '/api').replace(/\/$/, '');
+const API_BASE_URL = hasApiUrl
+  ? rawApiUrl.replace(/\/$/, '')
+  : (typeof window !== 'undefined'
+      ? new URL('/api', window.location.origin).toString().replace(/\/$/, '')
+      : '/api');
 
 if (!hasApiUrl && typeof window !== 'undefined') {
   // eslint-disable-next-line no-console

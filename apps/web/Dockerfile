@@ -27,9 +27,9 @@ RUN apk add --no-cache curl
 COPY apps/web/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /app/apps/web/dist /usr/share/nginx/html
 
-EXPOSE 5173
+EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -fsS http://localhost:5173/healthz || exit 1
+  CMD curl -fsS http://localhost:3000/healthz || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

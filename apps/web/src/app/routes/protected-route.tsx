@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from 'react-router';
+import { Navigate, Outlet, useLocation, redirect } from 'react-router';
 import { ROUTES } from '@/shared/model/routes';
 import { sessionManager } from '@/shared/model/session';
 
@@ -12,12 +12,8 @@ export function ProtectedRoute() {
   return <Outlet />;
 }
 
-export function ProtectedLoader(params) {
+export function ProtectedLoader() {
   const token = sessionManager.token;
-
-  if (!token) {
-    return <Navigate to={ROUTES.LOGIN} />;
-  }
-
-  return <Outlet />;
+  if (!token) return redirect(ROUTES.LOGIN);
+  return null;
 }

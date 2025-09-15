@@ -61,13 +61,19 @@ const RawEnv = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
-  BACKEND_PORT: z.coerce.number().int().positive().default(4000),
+  BACKEND_PORT: z.coerce.number().int().positive().default(3001),
+  API_PORT: z.coerce.number().int().positive().optional(),
+  API_HOST: z.string().min(1).default("localhost"),
+  API_PATH_PREFIX: z.string().default("/api"),
+  WEB_PORT: z.coerce.number().int().positive().default(3000),
+  WEB_DEV_PORT: z.coerce.number().int().positive().default(5173),
   JWT_SECRET: z.string().optional(),
   ACCESS_TTL: z.string().min(1).default("15m"),
   REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(30),
   FRONTEND_URL: z.string().min(1).default("http://localhost:5173"),
   DATABASE_URL: z.string().optional(),
   ADMIN_LOGINS: z.string().optional(),
+  VITE_API_URL: z.string().optional(),
 });
 
 const ConfigSchema = RawEnv.superRefine((data, ctx) => {
@@ -79,9 +85,23 @@ const ConfigSchema = RawEnv.superRefine((data, ctx) => {
     });
   }
 }).transform((data) => {
+  const port = data.API_PORT ?? data.BACKEND_PORT;
+  const prefix = data.API_PATH_PREFIX.startsWith("/")
+    ? data.API_PATH_PREFIX
+    : `/${data.API_PATH_PREFIX}`;
+  const apiUrl = (data.VITE_API_URL && data.VITE_API_URL.trim().length > 0)
+    ? data.VITE_API_URL.replace(/\/$/, "")
+    : `http://${data.API_HOST}:${port}${prefix}`;
   return {
     NODE_ENV: data.NODE_ENV,
-    PORT: data.BACKEND_PORT,
+    PORT: port,
+    API_HOST: data.API_HOST,
+    API_PORT: port,
+    API_PATH_PREFIX: prefix,
+    API_URL: apiUrl,
+    VITE_API_URL: apiUrl,
+    WEB_PORT: data.WEB_PORT,
+    WEB_DEV_PORT: data.WEB_DEV_PORT,
     JWT_SECRET: data.JWT_SECRET ?? "dev-secret",
     ACCESS_TTL: data.ACCESS_TTL,
     REFRESH_TTL_DAYS: data.REFRESH_TTL_DAYS,
@@ -95,13 +115,19 @@ type InferConfig = z.infer<typeof ConfigSchema>;
 
 const result = ConfigSchema.safeParse({
   NODE_ENV: process.env.NODE_ENV,
-  BACKEND_PORT: process.env.BACKEND_PORT,
+  BACKEND_PORT: process.env.BACKEND_PORT ?? process.env.API_PORT,
+  API_PORT: process.env.API_PORT ?? process.env.BACKEND_PORT,
+  API_HOST: process.env.API_HOST,
+  API_PATH_PREFIX: process.env.API_PATH_PREFIX,
+  WEB_PORT: process.env.WEB_PORT,
+  WEB_DEV_PORT: process.env.WEB_DEV_PORT,
   JWT_SECRET: process.env.JWT_SECRET,
   ACCESS_TTL: process.env.ACCESS_TTL,
   REFRESH_TTL_DAYS: process.env.REFRESH_TTL_DAYS,
   FRONTEND_URL: process.env.FRONTEND_URL,
   DATABASE_URL: process.env.DATABASE_URL,
   ADMIN_LOGINS: process.env.ADMIN_LOGINS,
+  VITE_API_URL: process.env.VITE_API_URL,
 });
 
 if (!result.success) {

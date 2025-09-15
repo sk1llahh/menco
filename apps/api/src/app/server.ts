@@ -14,6 +14,7 @@ export function createServer(): Express {
   const ALLOWED_ORIGINS = (CONFIG.FRONTEND_URL || "*")
     .split(",")
     .map((s: string) => s.trim());
+  const PREFIX = CONFIG.API_PATH_PREFIX || "/api";
 
   app.use(
     cors({
@@ -44,16 +45,16 @@ export function createServer(): Express {
     standardHeaders: true,
     legacyHeaders: false,
   });
-  app.use("/api/auth", authLimiter);
+  app.use(`${PREFIX}/auth`, authLimiter);
 
-  app.get("/api/health", (_req, res) => {
+  app.get(`${PREFIX}/health`, (_req, res) => {
     res.json({
       success: true,
       data: { ok: true, ts: new Date().toISOString() },
     });
   });
 
-  app.use("/api", apiRoutes);
+  app.use(PREFIX, apiRoutes);
 
   app.use(notFound);
   app.use(errorHandler);

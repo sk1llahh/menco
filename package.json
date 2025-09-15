@@ -14,7 +14,7 @@
     "build": "turbo run build",
     "start": "NODE_ENV=production turbo run start",
     "start:prod": "NODE_ENV=production pnpm run db:migrate:prod && turbo run start",
-    "dev": "NODE_ENV=development pnpm run db:up && pnpm run db:migrate:dev && turbo run dev",
+    "dev": "NODE_ENV=development pnpm run db:up:dev && pnpm run db:migrate:dev && turbo run dev",
     "api:dev": "NODE_ENV=development pnpm --filter=@repo/api run dev",
     "api:prod": "DOTENV_CONFIG_PATH=./env.production pnpm --filter=@repo/api run start",
     "db:studio:dev": "DOTENV_CONFIG_PATH=./env.development pnpm --filter=@repo/database run db:studio",
@@ -24,7 +24,10 @@
     "db:generate:prod": "DOTENV_CONFIG_PATH=./env.production pnpm --filter=@repo/database run db:generate",
     "db:migrate:prod": "DOTENV_CONFIG_PATH=./env.production pnpm --filter=@repo/database run db:migrate",
     "db:up": "docker compose up -d postgres",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "db:up:dev": "docker compose --env-file .env.development up -d postgres",
+    "compose:up:dev": "docker compose --env-file .env.development up -d",
+    "compose:down:dev": "docker compose --env-file .env.development down"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
