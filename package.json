@@ -8,10 +8,12 @@
   ],
   "packageManager": "pnpm@10.15.1",
   "scripts": {
+    "predev": "pnpm --filter @repo/config build",
     "format": "biome format --write",
     "lint": "biome lint --write",
     "check": "biome check --write",
     "build": "turbo run build",
+    "prestart": "pnpm --filter @repo/config build",
     "start": "NODE_ENV=production turbo run start",
     "start:prod": "NODE_ENV=production pnpm run db:migrate:prod && turbo run start",
     "dev": "NODE_ENV=development pnpm run db:up:dev && pnpm run db:migrate:dev && turbo run dev",
@@ -26,8 +28,11 @@
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
     "db:up:dev": "docker compose --env-file .env.development up -d postgres",
+    "db:up:prod": "docker compose --env-file .env.production up -d postgres",
     "compose:up:dev": "docker compose --env-file .env.development up -d",
-    "compose:down:dev": "docker compose --env-file .env.development down"
+    "compose:down:dev": "docker compose --env-file .env.development down",
+    "compose:up:prod": "docker compose --env-file .env.production up -d",
+    "compose:down:prod": "docker compose --env-file .env.production down"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
