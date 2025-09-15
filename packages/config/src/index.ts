@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { config as loadEnv } from "dotenv";
 import { z } from "zod";
 
-function findRepoRoot(start: string): string | undefined {
+export const findRepoRoot = (start: string): string | undefined  => {
   let curr = start;
   while (true) {
     const marker1 = path.join(curr, "pnpm-workspace.yaml");

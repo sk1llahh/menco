@@ -3,21 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { config as loadEnv } from "dotenv";
+import {findRepoRoot} from '@repo/config'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-function findRepoRoot(start) {
-  let curr = start;
-  while (true) {
-    const marker1 = path.join(curr, "pnpm-workspace.yaml");
-    const marker2 = path.join(curr, "turbo.json");
-    if (fs.existsSync(marker1) || fs.existsSync(marker2)) return curr;
-    const parent = path.dirname(curr);
-    if (!parent || parent === curr) return undefined;
-    curr = parent;
-  }
-}
 
 const repoRoot = findRepoRoot(__dirname);
 
